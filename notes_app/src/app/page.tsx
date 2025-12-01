@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import SideBar from "./components/SideBar";
-import AddButton from "./components/AddButton";
+import Toolbar from "./components/Toolbar";
 
 interface Note {
   id: string;
@@ -15,6 +15,12 @@ interface Note {
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredNotes = notes.filter(note =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     // Load notes from localStorage
@@ -61,12 +67,9 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      <SideBar notes={notes} onSelectNote={handleSelectNote} onDeleteNote={handleDeleteNote} />
+      <SideBar notes={filteredNotes} onSelectNote={handleSelectNote} onDeleteNote={handleDeleteNote} />
       <div className="flex-1 flex flex-col">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Notes</h1>
-          <AddButton onAdd={handleAddNote} />
-        </div>
+        <Toolbar onAdd={handleAddNote} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <div className="flex-1 p-4">
           {selectedNote ? (
             <div>
