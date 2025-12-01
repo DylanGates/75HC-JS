@@ -15,16 +15,7 @@ export default function SideBar() {
         setNotes(notes.filter(note => note.id !== id));
     };
 
-    const handleAddNote = (title: string, content: string) => {
-        const newNote: Note = {
-            id: Date.now().toString(),
-            title,
-            content,
-            createdAt: new Date(),
-        };
-        setNotes([...notes, newNote]);
-        setNewNote({ title: '', content: '' });
-    };
+    
 
     return (
         <div className="w-1/4 p-4 border-r">
