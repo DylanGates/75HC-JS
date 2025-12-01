@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import SideBar from "./components/SideBar";
 
 interface Note {
   id: string;
@@ -30,9 +31,9 @@ export default function Home() {
     setNewNote({ title: "", content: "" });
   };
 
-  const handleDeleteNote = (id: string) => {
-    setNotes(notes.filter((note) => note.id !== id));
-  };
+  // const handleDeleteNote = (id: string) => {
+  //   setNotes(notes.filter((note) => note.id !== id));
+  // };
 
 
   return (
@@ -60,21 +61,7 @@ export default function Home() {
       </div>
 
       <div>
-        {notes.map((note) => (
-          <div key={note.id} className="border p-4 mb-2">
-            <h2 className="font-bold">{note.title}</h2>
-            <p>{note.content}</p>
-            <p className="text-sm text-gray-500">
-              {note.createdAt.toLocaleString()}
-            </p>
-            <button
-              onClick={() => handleDeleteNote(note.id)}
-              className="bg-red-500 text-white p-2 mt-2"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+        <SideBar />
       </div>
 
       <Image
