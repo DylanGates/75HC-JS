@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import SideBar from "./components/SideBar";
 import Toolbar from "./components/Toolbar";
+import FormattingToolbar from "./components/FormattingToolbar";
 
 interface Note {
   id: string;
@@ -58,11 +59,9 @@ export default function Home() {
     setNotes(notes.map(note => note.id === updatedNote.id ? updatedNote : note));
   };
 
-  const handleDeleteNote = (id: string) => {
-    setNotes(notes.filter(note => note.id !== id));
-    if (selectedNote?.id === id) {
-      setSelectedNote(null);
-    }
+  const handleFormat = (format: string) => {
+    // Basic formatting for textarea - in a real app, use a rich text editor
+    console.log(`Apply ${format} formatting`);
   };
 
   return (
@@ -72,20 +71,23 @@ export default function Home() {
         <Toolbar onAdd={handleAddNote} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <div className="flex-1 p-4">
           {selectedNote ? (
-            <div>
-              <input
-                type="text"
-                value={selectedNote.title}
-                onChange={(e) => handleUpdateNote({ ...selectedNote, title: e.target.value })}
-                className="w-full text-2xl font-bold mb-4 border-none outline-none"
-                placeholder="Note Title"
-              />
-              <textarea
-                value={selectedNote.content}
-                onChange={(e) => handleUpdateNote({ ...selectedNote, content: e.target.value })}
-                className="w-full h-full border-none outline-none resize-none"
-                placeholder="Start writing..."
-              />
+            <div className="h-full flex flex-col">
+              <FormattingToolbar onFormat={handleFormat} />
+              <div className="flex-1 p-4">
+                <input
+                  type="text"
+                  value={selectedNote.title}
+                  onChange={(e) => handleUpdateNote({ ...selectedNote, title: e.target.value })}
+                  className="w-full text-2xl font-bold mb-4 border-none outline-none"
+                  placeholder="Note Title"
+                />
+                <textarea
+                  value={selectedNote.content}
+                  onChange={(e) => handleUpdateNote({ ...selectedNote, content: e.target.value })}
+                  className="w-full h-full border-none outline-none resize-none"
+                  placeholder="Start writing..."
+                />
+              </div>
             </div>
           ) : (
             <div className="flex items-center justify-center h-full text-gray-500">
