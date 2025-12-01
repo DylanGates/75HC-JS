@@ -109,11 +109,6 @@ export default function Home() {
     handleUpdateNote({ ...selectedNote, content: newContent });
   };
 
-  const handleFormat = (format: string) => {
-    // Basic formatting for textarea - in a real app, use a rich text editor
-    console.log(`Apply ${format} formatting`);
-  };
-
   return (
     <div className="flex h-screen">
       <SideBar 
