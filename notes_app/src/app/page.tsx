@@ -78,6 +78,37 @@ export default function Home() {
     setNotes(notes.map(note => note.id === updatedNote.id ? updatedNote : note));
   };
 
+  const handleDeleteNote = (id: string) => {
+    setNotes(notes.filter(note => note.id !== id));
+    if (selectedNote?.id === id) {
+      setSelectedNote(null);
+    }
+  };
+
+  const handleFormat = (format: string) => {
+    // Basic formatting - in a real app, use a rich text editor
+    if (!selectedNote) return;
+    let newContent = selectedNote.content;
+    switch (format) {
+      case 'bold':
+        newContent += '**bold text**';
+        break;
+      case 'italic':
+        newContent += '*italic text*';
+        break;
+      case 'underline':
+        newContent += '<u>underlined text</u>';
+        break;
+      case 'list':
+        newContent += '\n- Item';
+        break;
+      case 'numbered':
+        newContent += '\n1. Item';
+        break;
+    }
+    handleUpdateNote({ ...selectedNote, content: newContent });
+  };
+
   const handleFormat = (format: string) => {
     // Basic formatting for textarea - in a real app, use a rich text editor
     console.log(`Apply ${format} formatting`);
