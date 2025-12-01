@@ -1,4 +1,5 @@
 import React from 'react';
+import Folders from './Folders';
 
 interface Note {
     id: string;
@@ -7,15 +8,24 @@ interface Note {
     createdAt: Date;
 }
 
-interface SideBarProps {
-    notes: Note[];
-    onSelectNote: (note: Note) => void;
-    onDeleteNote: (id: string) => void;
+interface Folder {
+    id: string;
+    name: string;
 }
 
-export default function SideBar({ notes, onSelectNote, onDeleteNote }: SideBarProps) {
+interface SideBarProps {
+    notes: Note[];
+    folders: Folder[];
+    selectedFolder: string | null;
+    onSelectNote: (note: Note) => void;
+    onDeleteNote: (id: string) => void;
+    onSelectFolder: (folderId: string | null) => void;
+}
+
+export default function SideBar({ notes, folders, selectedFolder, onSelectNote, onDeleteNote, onSelectFolder }: SideBarProps) {
     return (
         <div className="w-80 bg-gray-50 border-r p-4">
+            <Folders folders={folders} selectedFolder={selectedFolder} onSelectFolder={onSelectFolder} />
             <h2 className="text-lg font-semibold mb-4">Notes</h2>
             <div className="space-y-2">
                 {notes.map(note => (

@@ -6,25 +6,35 @@ import SideBar from "./components/SideBar";
 import Toolbar from "./components/Toolbar";
 import FormattingToolbar from "./components/FormattingToolbar";
 
+interface Folder {
+  id: string;
+  name: string;
+}
+
 interface Note {
   id: string;
   title: string;
   content: string;
   createdAt: Date;
+  folderId: string;
 }
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredNotes = notes.filter(note =>
-    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    note.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredNotes = notes.filter(note => {
+    const matchesSearch = note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         note.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFolder = selectedFolder === null || note.folderId === selectedFolder;
+    return matchesSearch && matchesFolder;
+  });
 
   useEffect(() => {
-    // Load notes from localStorage
+    // Load notes and folders from localStorage
     const savedNotes = localStorage.getItem('notes');
     if (savedNotes) {
       const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
@@ -33,12 +43,20 @@ export default function Home() {
       }));
       setNotes(parsedNotes);
     }
+    const savedFolders = localStorage.getItem('folders');
+    if (savedFolders) {
+      setFolders(JSON.parse(savedFolders));
+    } else {
+      // Default folder
+      setFolders([{ id: 'default', name: 'Notes' }]);
+    }
   }, []);
 
   useEffect(() => {
-    // Save notes to localStorage
+    // Save notes and folders to localStorage
     localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+    localStorage.setItem('folders', JSON.stringify(folders));
+  }, [notes, folders]);
 
   const handleAddNote = () => {
     const newNote: Note = {
@@ -46,6 +64,7 @@ export default function Home() {
       title: "New Note",
       content: "",
       createdAt: new Date(),
+      folderId: selectedFolder || 'default',
     };
     setNotes([newNote, ...notes]);
     setSelectedNote(newNote);
@@ -66,7 +85,14 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      <SideBar notes={filteredNotes} onSelectNote={handleSelectNote} onDeleteNote={handleDeleteNote} />
+      <SideBar 
+        notes={filteredNotes} 
+        folders={folders} 
+        selectedFolder={selectedFolder} 
+        onSelectNote={handleSelectNote} 
+        onDeleteNote={handleDeleteNote} 
+        onSelectFolder={setSelectedFolder} 
+      />
       <div className="flex-1 flex flex-col">
         <Toolbar onAdd={handleAddNote} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <div className="flex-1 p-4">
