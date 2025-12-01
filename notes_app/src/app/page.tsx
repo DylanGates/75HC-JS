@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import SideBar from "./components/SideBar";
+import AddButton from "./components/AddButton";
 
 interface Note {
   id: string;
@@ -13,67 +14,83 @@ interface Note {
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [newNote, setNewNote] = useState({ title: "", content: "" });
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   useEffect(() => {
-    // Fetch notes from an API or local storage
-    // setNotes(fetchedNotes);
+    // Load notes from localStorage
+    const savedNotes = localStorage.getItem('notes');
+    if (savedNotes) {
+      const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
+        ...note,
+        createdAt: new Date(note.createdAt)
+      }));
+      setNotes(parsedNotes);
+    }
   }, []);
-  
+
+  useEffect(() => {
+    // Save notes to localStorage
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
+
   const handleAddNote = () => {
-    const note: Note = {
+    const newNote: Note = {
       id: Date.now().toString(),
-      title: newNote.title,
-      content: newNote.content,
+      title: "New Note",
+      content: "",
       createdAt: new Date(),
     };
-    setNotes([...notes, note]);
-    setNewNote({ title: "", content: "" });
+    setNotes([newNote, ...notes]);
+    setSelectedNote(newNote);
   };
 
-  // const handleDeleteNote = (id: string) => {
-  //   setNotes(notes.filter((note) => note.id !== id));
-  // };
+  const handleSelectNote = (note: Note) => {
+    setSelectedNote(note);
+  };
 
+  const handleUpdateNote = (updatedNote: Note) => {
+    setNotes(notes.map(note => note.id === updatedNote.id ? updatedNote : note));
+  };
+
+  const handleDeleteNote = (id: string) => {
+    setNotes(notes.filter(note => note.id !== id));
+    if (selectedNote?.id === id) {
+      setSelectedNote(null);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-4 flex flex-col items-center justify-center"> 
-      <h1 className="text-2xl font-bold mb-4 mt-30">Notes App</h1>
-
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Title"
-          value={newNote.title}
-          onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Content"
-          value={newNote.content}
-          onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <button onClick={handleAddNote} className="bg-blue-500 text-white p-2">
-          Add Note
-        </button>
+    <div className="flex h-screen">
+      <SideBar notes={notes} onSelectNote={handleSelectNote} onDeleteNote={handleDeleteNote} />
+      <div className="flex-1 flex flex-col">
+        <div className="p-4 border-b flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Notes</h1>
+          <AddButton onAdd={handleAddNote} />
+        </div>
+        <div className="flex-1 p-4">
+          {selectedNote ? (
+            <div>
+              <input
+                type="text"
+                value={selectedNote.title}
+                onChange={(e) => handleUpdateNote({ ...selectedNote, title: e.target.value })}
+                className="w-full text-2xl font-bold mb-4 border-none outline-none"
+                placeholder="Note Title"
+              />
+              <textarea
+                value={selectedNote.content}
+                onChange={(e) => handleUpdateNote({ ...selectedNote, content: e.target.value })}
+                className="w-full h-full border-none outline-none resize-none"
+                placeholder="Start writing..."
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p>Select a note to view or create a new one.</p>
+            </div>
+          )}
+        </div>
       </div>
-
-      <div>
-        <SideBar />
-      </div>
-
-      <Image
-        src="/notes.png"
-        alt="Notes App Image"
-        width={500}
-        height={300}
-        className="mt-4 rounded-lg shadow-lg"
-      />
-      <p className="text-sm text-gray-500 mt-2">
-        Note: This is a simple notes app built with Next.js and React.
-      </p>
     </div>
   );
 }

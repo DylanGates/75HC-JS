@@ -7,29 +7,29 @@ interface Note {
     createdAt: Date;
 }
 
-export default function SideBar() {
-    const [notes, setNotes] = React.useState<Note[]>([]);
-    const [newNote, setNewNote] = React.useState({ title: '', content: '' });
+interface SideBarProps {
+    notes: Note[];
+    onSelectNote: (note: Note) => void;
+    onDeleteNote: (id: string) => void;
+}
 
-    const handleDeleteNote = (id: string) => {
-        setNotes(notes.filter(note => note.id !== id));
-    };
-
-    
-
+export default function SideBar({ notes, onSelectNote, onDeleteNote }: SideBarProps) {
     return (
-        <div className="w-1/4 p-4 border-r">
-            {notes.map(note => (
-                <div key={note.id} className="p-4 border-b">
-                    <h2 className="text-lg font-bold">{note.title}</h2>
-                    <p>{note.content}</p>
-                    <button
-                        onClick={() => handleDeleteNote(note.id)}
-                        className="bg-red-500 text-white p-2 mt-2 rounded"
+        <div className="w-80 bg-gray-50 border-r p-4">
+            <h2 className="text-lg font-semibold mb-4">Notes</h2>
+            <div className="space-y-2">
+                {notes.map(note => (
+                    <div
+                        key={note.id}
+                        onClick={() => onSelectNote(note)}
+                        className="p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-100"
                     >
-                        Delete
-                    </button>
-                </div>
-            ))}
+                        <h3 className="font-medium text-gray-900 truncate">{note.title || "Untitled"}</h3>
+                        <p className="text-sm text-gray-600 truncate">{note.content}</p>
+                        <p className="text-xs text-gray-400 mt-1">{note.createdAt.toLocaleDateString()}</p>
+                    </div>
+                ))}
+            </div>
         </div>
-    )};
+    );
+}
