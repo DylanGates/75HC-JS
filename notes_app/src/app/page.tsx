@@ -76,6 +76,7 @@ export default function Home() {
 
   const handleUpdateNote = (updatedNote: Note) => {
     setNotes(notes.map(note => note.id === updatedNote.id ? updatedNote : note));
+    setSelectedNote(updatedNote);
   };
 
   const handleDeleteNote = (id: string) => {
