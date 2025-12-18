@@ -47,7 +47,8 @@ export default function Home() {
       localStorage.removeItem("theme");
       localStorage.removeItem("themeTimestamp");
     }
-    const effectiveThemeLocal = newTheme === "system" ? getSystemTheme() : newTheme;
+    const effectiveThemeLocal =
+      newTheme === "system" ? getSystemTheme() : newTheme;
     setEffectiveTheme(effectiveThemeLocal);
     document.documentElement.className = effectiveThemeLocal;
   }
@@ -72,18 +73,14 @@ export default function Home() {
     }
   }, [themeName]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   if (!mounted) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-900">
         <div className="p-8 rounded-lg shadow-lg bg-white border border-gray-200">
-          <h1 className="text-3xl font-bold mb-4 text-center">Theme Selector</h1>
-          <p className="text-center mb-6 opacity-80">
-            Loading theme...
-          </p>
+          <h1 className="text-3xl font-bold mb-4 text-center">
+            Theme Selector
+          </h1>
+          <p className="text-center mb-6 opacity-80">Loading theme...</p>
         </div>
       </div>
     );
