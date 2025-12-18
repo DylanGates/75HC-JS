@@ -6,13 +6,24 @@ export default function Home() {
   const [themeName, setThemeName] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("theme");
-      if (saved && ["light", "dark", "system"].includes(saved)) {
-        return saved;
+      const timestamp = localStorage.getItem("themeTimestamp");
+      if (saved && timestamp) {
+        const expiry = parseInt(timestamp) + 30 * 24 * 60 * 60 * 1000; // 30 days
+        if (
+          Date.now() < expiry &&
+          ["light", "dark", "system"].includes(saved)
+        ) {
+          return saved;
+        }
       }
       return "system"; // Default to system on first load
     }
     return "light";
   });
+
+  const [rememberChoice, setRememberChoice] = useState(false);
+  const [effectiveTheme, setEffectiveTheme] = useState("light");
+  const [mounted, setMounted] = useState(false);
 
   const getSystemTheme = () => {
     if (typeof window !== "undefined") {
@@ -29,22 +40,31 @@ export default function Home() {
 
   function setTheme(newTheme: string) {
     setThemeName(newTheme);
-    localStorage.setItem("theme", newTheme);
-    const effectiveTheme = newTheme === "system" ? getSystemTheme() : newTheme;
-    document.documentElement.className = effectiveTheme;
+    if (rememberChoice) {
+      localStorage.setItem("theme", newTheme);
+      localStorage.setItem("themeTimestamp", Date.now().toString());
+    } else {
+      localStorage.removeItem("theme");
+      localStorage.removeItem("themeTimestamp");
+    }
+    const effectiveThemeLocal = newTheme === "system" ? getSystemTheme() : newTheme;
+    setEffectiveTheme(effectiveThemeLocal);
+    document.documentElement.className = effectiveThemeLocal;
   }
 
   useEffect(() => {
     const getEffectiveThemeLocal = () => {
       return themeName === "system" ? getSystemTheme() : themeName;
     };
-    const effectiveTheme = getEffectiveThemeLocal();
-    document.documentElement.className = effectiveTheme;
+    const effectiveThemeLocal = getEffectiveThemeLocal();
+    setEffectiveTheme(effectiveThemeLocal);
+    document.documentElement.className = effectiveThemeLocal;
 
     if (themeName === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const handleChange = () => {
         const newEffectiveTheme = getSystemTheme();
+        setEffectiveTheme(newEffectiveTheme);
         document.documentElement.className = newEffectiveTheme;
       };
       mediaQuery.addEventListener("change", handleChange);
@@ -52,7 +72,22 @@ export default function Home() {
     }
   }, [themeName]);
 
-  const effectiveTheme = getEffectiveTheme();
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-900">
+        <div className="p-8 rounded-lg shadow-lg bg-white border border-gray-200">
+          <h1 className="text-3xl font-bold mb-4 text-center">Theme Selector</h1>
+          <p className="text-center mb-6 opacity-80">
+            Loading theme...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -113,6 +148,17 @@ export default function Home() {
           >
             System ({getSystemTheme()})
           </button>
+        </div>
+        <div className="mt-4">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={rememberChoice}
+              onChange={(e) => setRememberChoice(e.target.checked)}
+              className="mr-2"
+            />
+            Remember my choice
+          </label>
         </div>
       </div>
     </div>
