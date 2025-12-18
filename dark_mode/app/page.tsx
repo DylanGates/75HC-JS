@@ -60,6 +60,7 @@ export default function Home() {
     const effectiveThemeLocal = getEffectiveThemeLocal();
     setEffectiveTheme(effectiveThemeLocal);
     document.documentElement.className = effectiveThemeLocal;
+    setMounted(true);
 
     if (themeName === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
