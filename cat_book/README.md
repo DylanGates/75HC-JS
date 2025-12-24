@@ -15,17 +15,20 @@ A beautiful Next.js web app for discovering and browsing cat images using The Ca
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - Bun or npm
 
 ### Installation
 
 1. Navigate to project directory
+
 ```bash
 cd cat_book
 ```
 
 2. Install dependencies
+
 ```bash
 bun install
 # or
@@ -33,7 +36,8 @@ npm install
 ```
 
 3. Set up environment variables
-Create a `.env.local` file and add your Cat API key:
+   Create a `.env.local` file and add your Cat API key:
+
 ```env
 NEXT_PUBLIC_CAT_API_KEY=your_api_key_here
 ```
@@ -41,6 +45,7 @@ NEXT_PUBLIC_CAT_API_KEY=your_api_key_here
 Get your free API key from [The Cat API](https://thecatapi.com/)
 
 4. Run the development server
+
 ```bash
 bun dev
 # or
@@ -77,24 +82,28 @@ cat_book/
 ## Features in Detail
 
 ### 🎲 Random Cat Page
+
 - Display a random cat image with breed information
 - One-click refresh to get a new random cat
 - Add cats to your favorites
 - View all your favorited cats
 
 ### 🔍 Browse Page
+
 - Filter cats by 18 different breeds
 - Paginate through results
 - Responsive grid layout
 - Loading states and error handling
 
 ### ❤️ Favorites
+
 - Save favorite cats locally
 - Persistent storage using localStorage
 - Quick view of all favorites
 - Remove cats from favorites with one click
 
 ### 📖 Detailed Info
+
 - Individual cat detail pages
 - Full breed information including:
   - Origin country
@@ -111,6 +120,7 @@ The app uses The Cat API with these endpoints:
 - `GET /images/{id}` - Get specific cat by ID
 
 Query parameters supported:
+
 - `limit` - Number of images (1-100)
 - `page` - Page number for pagination
 - `breed_ids` - Filter by breed ID

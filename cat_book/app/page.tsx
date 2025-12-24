@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import CatImageDisplay from '@/components/CatImageDisplay';
 import { fetchRandomCat, CatImage } from '@/lib/catApi';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Heart, Loader } from 'lucide-react';
 
 export default function Home() {
   const [cat, setCat] = useState<CatImage | null>(null);
@@ -58,37 +61,44 @@ export default function Home() {
 
   if (showFavorites) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50 py-12 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50 py-12 px-4">
         <div className="max-w-2xl mx-auto">
-          <button
+          <Button 
             onClick={() => setShowFavorites(false)}
-            className="mb-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
+            variant="outline"
+            className="mb-6"
           >
             ← Back to Random
-          </button>
+          </Button>
 
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">❤️ My Favorite Cats ({favorites.length})</h2>
+          <h2 className="text-4xl font-bold text-slate-900 mb-2">
+            ❤️ Favorite Cats
+          </h2>
+          <p className="text-slate-600 mb-6">({favorites.length} saved)</p>
 
           {favorites.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-500 text-lg">No favorites yet! Add some cute cats to your collection.</p>
-            </div>
+            <Alert>
+              <Heart className="h-4 w-4" />
+              <AlertDescription>
+                No favorites yet! Add some cute cats to your collection.
+              </AlertDescription>
+            </Alert>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {favorites.map((favCat) => (
-                <div key={favCat.id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="relative w-full h-40 bg-gray-100">
+                <div key={favCat.id} className="relative group rounded-lg overflow-hidden border border-slate-200 hover:border-slate-300 transition-colors">
+                  <div className="relative w-full h-40 bg-slate-100">
                     <img
                       src={favCat.url}
                       alt="Favorite cat"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
                   </div>
-                  <div className="p-4">
+                  <div className="p-4 bg-white">
                     {favCat.breeds && favCat.breeds.length > 0 ? (
-                      <p className="font-semibold text-gray-900">{favCat.breeds[0].name}</p>
+                      <p className="font-semibold text-slate-900">{favCat.breeds[0].name}</p>
                     ) : (
-                      <p className="text-sm text-gray-500">Unknown breed</p>
+                      <p className="text-sm text-slate-500">Unknown breed</p>
                     )}
                   </div>
                 </div>
@@ -101,51 +111,74 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">🐱 Random Cat</h1>
-          <p className="text-gray-600">Discover and favorite adorable cats</p>
+          <h1 className="text-5xl font-bold text-slate-900 mb-2">
+            🐱 Random Cat
+          </h1>
+          <p className="text-slate-600 text-lg">Discover and favorite adorable cats</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
-          </div>
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
 
         <div className="flex flex-col items-center gap-6">
           <CatImageDisplay cat={cat} loading={loading} />
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            <button
+          <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+            <Button
               onClick={loadRandomCat}
               disabled={loading}
-              className="px-8 py-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+              size="lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white"
             >
-              {loading ? 'Loading...' : '🎲 Get Random Cat'}
-            </button>
+              {loading ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  🎲 Get Random Cat
+                </>
+              )}
+            </Button>
 
             {cat && (
-              <button
+              <Button
                 onClick={toggleFavorite}
-                className={`px-8 py-3 font-semibold rounded-lg transition-colors duration-200 shadow-md ${
-                  isFavorited
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-white border-2 border-red-500 text-red-500 hover:bg-red-50'
-                }`}
+                size="lg"
+                variant={isFavorited ? "default" : "outline"}
+                className={isFavorited ? "bg-rose-500 hover:bg-rose-600 text-white" : ""}
               >
-                {isFavorited ? '❤️ Favorited' : '🤍 Add to Favorites'}
-              </button>
+                {isFavorited ? (
+                  <>
+                    <Heart className="mr-2 h-4 w-4 fill-current" />
+                    Favorited
+                  </>
+                ) : (
+                  <>
+                    <Heart className="mr-2 h-4 w-4" />
+                    Add to Favorites
+                  </>
+                )}
+              </Button>
             )}
           </div>
 
-          <button
+          <Button
             onClick={() => setShowFavorites(true)}
-            className="px-6 py-2 bg-white border-2 border-orange-500 text-orange-500 font-semibold rounded-lg hover:bg-orange-50 transition-colors"
+            variant="outline"
+            className="w-full sm:w-auto"
           >
-            ❤️ View Favorites ({favorites.length})
-          </button>
+            <Heart className="mr-2 h-4 w-4" />
+            View Favorites ({favorites.length})
+          </Button>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { CatImage } from '@/lib/catApi';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { CatImage } from "@/lib/catApi";
 
 interface CatDetailProps {
   params: {
@@ -17,17 +17,17 @@ export default function CatDetail({ params }: CatDetailProps) {
   useEffect(() => {
     const fetchCatDetail = async () => {
       try {
-        const apiKey = process.env.NEXT_PUBLIC_CAT_API_KEY || '';
+        const apiKey = process.env.NEXT_PUBLIC_CAT_API_KEY || "";
         const response = await fetch(
           `https://api.thecatapi.com/v1/images/${params.id}`,
           {
-            headers: { 'x-api-key': apiKey },
+            headers: { "x-api-key": apiKey },
           }
         );
         const data = await response.json();
         setCat(data);
       } catch (error) {
-        console.error('Failed to fetch cat details:', error);
+        console.error("Failed to fetch cat details:", error);
       } finally {
         setLoading(false);
       }
@@ -50,7 +50,9 @@ export default function CatDetail({ params }: CatDetailProps) {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Cat not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Cat not found
+          </h1>
           <p className="text-gray-600">Sorry, we couldn't find this cat.</p>
         </div>
       </div>
@@ -100,15 +102,21 @@ export default function CatDetail({ params }: CatDetailProps) {
 
                 {cat.breeds[0].life_span && (
                   <div className="p-4 bg-green-50 rounded-lg">
-                    <h3 className="font-semibold text-green-900 mb-1">Life Span</h3>
-                    <p className="text-green-800">{cat.breeds[0].life_span} years</p>
+                    <h3 className="font-semibold text-green-900 mb-1">
+                      Life Span
+                    </h3>
+                    <p className="text-green-800">
+                      {cat.breeds[0].life_span} years
+                    </p>
                   </div>
                 )}
               </div>
 
               {cat.breeds[0].temperament && (
                 <div className="p-4 bg-purple-50 rounded-lg">
-                  <h3 className="font-semibold text-purple-900 mb-2">Temperament</h3>
+                  <h3 className="font-semibold text-purple-900 mb-2">
+                    Temperament
+                  </h3>
                   <p className="text-purple-800">{cat.breeds[0].temperament}</p>
                 </div>
               )}
@@ -128,14 +136,20 @@ export default function CatDetail({ params }: CatDetailProps) {
             </div>
           ) : (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Unknown Breed</h2>
-              <p className="text-gray-600">No breed information available for this cat.</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Unknown Breed
+              </h2>
+              <p className="text-gray-600">
+                No breed information available for this cat.
+              </p>
             </div>
           )}
 
           <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500">
             <p>Image ID: {cat.id}</p>
-            <p>Dimensions: {cat.width}x{cat.height}</p>
+            <p>
+              Dimensions: {cat.width}x{cat.height}
+            </p>
           </div>
         </div>
       </div>

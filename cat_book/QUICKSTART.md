@@ -3,19 +3,22 @@
 ## 🚀 Quickest Setup
 
 1. **Get your API key** (free)
+
    - Visit [thecatapi.com](https://thecatapi.com)
    - Sign up for a free account
    - Copy your API key
 
 2. **Set up the app**
+
    ```bash
    cd /Users/admin/Projects/75HC/75HC-JS/cat_book
-   
+
    # Create .env.local
    echo "NEXT_PUBLIC_CAT_API_KEY=your_api_key_here" > .env.local
    ```
 
 3. **Run it**
+
    ```bash
    bun install  # (or npm install)
    bun dev      # (or npm run dev)
@@ -26,11 +29,11 @@
 
 ## 📌 Pages
 
-| Route | Purpose |
-|-------|---------|
-| `/` | Random cat display with favorites |
-| `/browse` | Filter by breed & paginate |
-| `/cat/[id]` | Full breed details & info |
+| Route       | Purpose                           |
+| ----------- | --------------------------------- |
+| `/`         | Random cat display with favorites |
+| `/browse`   | Filter by breed & paginate        |
+| `/cat/[id]` | Full breed details & info         |
 
 ## ✨ Key Features
 
@@ -44,6 +47,7 @@
 ## 🔑 Environment Variables
 
 Only one variable needed in `.env.local`:
+
 ```
 NEXT_PUBLIC_CAT_API_KEY=live_RqFEbIONQEviwDf2moYVMufa211aAmVG83YCVjfqNhHZNV5v83e2BiBMd0QNWpiL
 ```
@@ -80,18 +84,22 @@ app/
 ## 🎯 Common Tasks
 
 **View random cats**
+
 - Visit homepage, click "Get Random Cat"
 
 **Find a specific breed**
+
 - Go to /browse
 - Select breed from dropdown
 - Use prev/next to paginate
 
 **Save a favorite**
+
 - Click "Add to Favorites" on any cat
 - View all in "My Favorite Cats" section
 
 **Learn about a breed**
+
 - Click any cat in the grid
 - See full details, origin, temperament
 - Visit Wikipedia link for more info
@@ -99,12 +107,14 @@ app/
 ## 🔧 Development
 
 **Build for production**
+
 ```bash
 bun run build
 bun start
 ```
 
 **Check for issues**
+
 ```bash
 bun run lint
 ```
@@ -117,16 +127,19 @@ bun run lint
 ## 🐛 Troubleshooting
 
 **"API Error" messages?**
+
 - Check your API key is valid
 - Verify internet connection
 - Check browser console for details
 
 **Favorites not persisting?**
+
 - Enable localStorage in browser
 - Try a different browser
 - Clear cache and reload
 
 **Images not loading?**
+
 - Check internet connection
 - Verify API key is correct
 - The Cat API might be temporarily down
