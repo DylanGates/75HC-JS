@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import CatImageDisplay from "@/components/CatImageDisplay";
 import { fetchRandomCat, CatImage } from "@/lib/catApi";
@@ -61,7 +62,7 @@ export default function Home() {
 
   if (showFavorites) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50 py-12 px-4">
+      <div className="min-h-screen bg-linear-to-br from-rose-50 via-white to-orange-50 py-12 px-4">
         <div className="max-w-2xl mx-auto">
           <Button
             onClick={() => setShowFavorites(false)}
@@ -91,7 +92,7 @@ export default function Home() {
                   className="relative group rounded-lg overflow-hidden border border-slate-200 hover:border-slate-300 transition-colors"
                 >
                   <div className="relative w-full h-40 bg-slate-100">
-                    <img
+                    <Image
                       src={favCat.url}
                       alt="Favorite cat"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
@@ -116,7 +117,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-yellow-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-slate-900 mb-2">

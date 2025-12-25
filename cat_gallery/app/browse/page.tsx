@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 
 const BREEDS = [
-  { id: "", name: "All Breeds" },
+  { id: "all", name: "All Breeds" },
   { id: "abys", name: "Abyssinian" },
   { id: "beng", name: "Bengal" },
   { id: "birm", name: "Birman" },
@@ -44,12 +44,12 @@ const BREEDS = [
 
 export default function BrowsePage() {
   const [cats, setCats] = useState<CatImage[]>([]);
-  const [selectedBreed, setSelectedBreed] = useState("");
+  const [selectedBreed, setSelectedBreed] = useState("all");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
-  const loadCats = async (breedId: string = "", pageNum: number = 0) => {
+  const loadCats = async (breedId: string = "all", pageNum: number = 0) => {
     setLoading(true);
     setError(null);
     try {
@@ -57,7 +57,7 @@ export default function BrowsePage() {
         limit: 12,
         page: pageNum,
         order: "RAND",
-        breed_ids: breedId || undefined,
+        breed_ids: breedId !== "all" ? breedId : undefined,
       });
       setCats(cats);
     } catch (err) {

@@ -53,7 +53,7 @@ export default function CatDetail({ params }: CatDetailProps) {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Cat not found
           </h1>
-          <p className="text-gray-600">Sorry, we couldn't find this cat.</p>
+          <p className="text-gray-600">Sorry, we couldn&apos;t find this cat.</p>
         </div>
       </div>
     );
@@ -120,8 +120,6 @@ export default function CatDetail({ params }: CatDetailProps) {
                   <p className="text-purple-800">{cat.breeds[0].temperament}</p>
                 </div>
               )}
-
-
             </div>
           ) : (
             <div>

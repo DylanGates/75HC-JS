@@ -5,7 +5,13 @@
 
 import Image from "next/image";
 import { CatImage } from "@/lib/catApi";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface CatGridProps {
@@ -72,7 +78,9 @@ export default function CatGrid({ cats, loading = false }: CatGridProps) {
                 )}
               </>
             ) : (
-              <CardTitle className="text-slate-500 text-sm">Unknown breed</CardTitle>
+              <CardTitle className="text-slate-500 text-sm">
+                Unknown breed
+              </CardTitle>
             )}
           </CardHeader>
         </Card>
