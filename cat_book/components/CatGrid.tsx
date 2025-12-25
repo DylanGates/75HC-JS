@@ -80,25 +80,3 @@ export default function CatGrid({ cats, loading = false }: CatGridProps) {
     </div>
   );
 }
-
-          <div className="p-4">
-            {cat.breeds && cat.breeds.length > 0 ? (
-              <>
-                <h3 className="font-semibold text-gray-900 mb-1 truncate">
-                  {cat.breeds[0].name}
-                </h3>
-                {cat.breeds[0].origin && (
-                  <p className="text-sm text-gray-600 truncate">
-                    📍 {cat.breeds[0].origin}
-                  </p>
-                )}
-              </>
-            ) : (
-              <p className="text-sm text-gray-500">Unknown breed</p>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}

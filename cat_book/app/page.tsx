@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import CatImageDisplay from '@/components/CatImageDisplay';
-import { fetchRandomCat, CatImage } from '@/lib/catApi';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Heart, Loader } from 'lucide-react';
+import { useState, useEffect } from "react";
+import CatImageDisplay from "@/components/CatImageDisplay";
+import { fetchRandomCat, CatImage } from "@/lib/catApi";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, Heart, Loader } from "lucide-react";
 
 export default function Home() {
   const [cat, setCat] = useState<CatImage | null>(null);
@@ -21,7 +21,7 @@ export default function Home() {
       const randomCat = await fetchRandomCat();
       setCat(randomCat);
     } catch (err) {
-      setError('Failed to load cat. Please try again.');
+      setError("Failed to load cat. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
@@ -31,39 +31,39 @@ export default function Home() {
   useEffect(() => {
     loadRandomCat();
     // Load favorites from localStorage
-    const saved = localStorage.getItem('catFavorites');
+    const saved = localStorage.getItem("catFavorites");
     if (saved) {
       try {
         setFavorites(JSON.parse(saved));
       } catch (e) {
-        console.error('Failed to load favorites:', e);
+        console.error("Failed to load favorites:", e);
       }
     }
   }, []);
 
   useEffect(() => {
     // Save favorites to localStorage
-    localStorage.setItem('catFavorites', JSON.stringify(favorites));
+    localStorage.setItem("catFavorites", JSON.stringify(favorites));
   }, [favorites]);
 
   const toggleFavorite = () => {
     if (!cat) return;
-    
-    const isFavorited = favorites.some(fav => fav.id === cat.id);
+
+    const isFavorited = favorites.some((fav) => fav.id === cat.id);
     if (isFavorited) {
-      setFavorites(favorites.filter(fav => fav.id !== cat.id));
+      setFavorites(favorites.filter((fav) => fav.id !== cat.id));
     } else {
       setFavorites([...favorites, cat]);
     }
   };
 
-  const isFavorited = cat ? favorites.some(fav => fav.id === cat.id) : false;
+  const isFavorited = cat ? favorites.some((fav) => fav.id === cat.id) : false;
 
   if (showFavorites) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50 py-12 px-4">
         <div className="max-w-2xl mx-auto">
-          <Button 
+          <Button
             onClick={() => setShowFavorites(false)}
             variant="outline"
             className="mb-6"
@@ -86,7 +86,10 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {favorites.map((favCat) => (
-                <div key={favCat.id} className="relative group rounded-lg overflow-hidden border border-slate-200 hover:border-slate-300 transition-colors">
+                <div
+                  key={favCat.id}
+                  className="relative group rounded-lg overflow-hidden border border-slate-200 hover:border-slate-300 transition-colors"
+                >
                   <div className="relative w-full h-40 bg-slate-100">
                     <img
                       src={favCat.url}
@@ -96,7 +99,9 @@ export default function Home() {
                   </div>
                   <div className="p-4 bg-white">
                     {favCat.breeds && favCat.breeds.length > 0 ? (
-                      <p className="font-semibold text-slate-900">{favCat.breeds[0].name}</p>
+                      <p className="font-semibold text-slate-900">
+                        {favCat.breeds[0].name}
+                      </p>
                     ) : (
                       <p className="text-sm text-slate-500">Unknown breed</p>
                     )}
@@ -117,7 +122,9 @@ export default function Home() {
           <h1 className="text-5xl font-bold text-slate-900 mb-2">
             🐱 Random Cat
           </h1>
-          <p className="text-slate-600 text-lg">Discover and favorite adorable cats</p>
+          <p className="text-slate-600 text-lg">
+            Discover and favorite adorable cats
+          </p>
         </div>
 
         {error && (
@@ -143,9 +150,7 @@ export default function Home() {
                   Loading...
                 </>
               ) : (
-                <>
-                  🎲 Get Random Cat
-                </>
+                <>🎲 Get Random Cat</>
               )}
             </Button>
 
@@ -154,7 +159,9 @@ export default function Home() {
                 onClick={toggleFavorite}
                 size="lg"
                 variant={isFavorited ? "default" : "outline"}
-                className={isFavorited ? "bg-rose-500 hover:bg-rose-600 text-white" : ""}
+                className={
+                  isFavorited ? "bg-rose-500 hover:bg-rose-600 text-white" : ""
+                }
               >
                 {isFavorited ? (
                   <>
@@ -181,41 +188,6 @@ export default function Home() {
           </Button>
         </div>
       </div>
-    </div>
-  );
-}
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
     </div>
   );
 }

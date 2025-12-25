@@ -121,18 +121,7 @@ export default function CatDetail({ params }: CatDetailProps) {
                 </div>
               )}
 
-              {cat.breeds[0].wikipedia_url && (
-                <div>
-                  <a
-                    href={cat.breeds[0].wikipedia_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
-                  >
-                    📖 Learn more on Wikipedia
-                  </a>
-                </div>
-              )}
+
             </div>
           ) : (
             <div>

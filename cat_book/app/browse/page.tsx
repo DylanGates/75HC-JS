@@ -145,9 +145,7 @@ export default function BrowsePage() {
             </Button>
 
             <div className="px-6 py-2 bg-white border border-slate-200 rounded-lg">
-              <p className="text-slate-700 font-semibold">
-                Page {page + 1}
-              </p>
+              <p className="text-slate-700 font-semibold">Page {page + 1}</p>
             </div>
 
             <Button
