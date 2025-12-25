@@ -12,6 +12,10 @@ A beautiful Next.js web app for discovering and browsing cat images using The Ca
 🎨 **Modern UI** - Beautiful Tailwind CSS styling with gradients and animations
 ⚡ **Fast Loading** - Optimized Next.js app with Image component
 
+<img width="1413" height="703" alt="Screenshot 2025-12-25 at 12 09 25 AM" src="https://github.com/user-attachments/assets/b532f90f-5bfc-4a54-9ef4-6919b1f0aa20" />
+
+<img width="1412" height="711" alt="Screenshot 2025-12-25 at 12 09 39 AM" src="https://github.com/user-attachments/assets/854e28bb-a375-45ba-af1c-580f008277b9" />
+
 ## Getting Started
 
 ### Prerequisites
