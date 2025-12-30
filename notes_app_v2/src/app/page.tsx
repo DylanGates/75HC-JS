@@ -123,6 +123,17 @@ export default function Home() {
     }
   };
 
+  const handleMarkAllComplete = () => {
+    setTodos(todos.map((todo) => ({ ...todo, completed: true })));
+  };
+
+  const handleDeleteCompleted = () => {
+    setTodos(todos.filter((todo) => !todo.completed));
+    if (selectedTodo?.completed) {
+      setSelectedTodo(null);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       <SideBar
@@ -144,6 +155,8 @@ export default function Home() {
           onSortByChange={setSortBy}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
+          onMarkAllComplete={handleMarkAllComplete}
+          onDeleteCompleted={handleDeleteCompleted}
         />
         <div className="flex-1 p-6 overflow-auto">
           {selectedTodo ? (

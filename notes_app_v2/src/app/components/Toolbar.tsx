@@ -13,6 +13,8 @@ interface ToolbarProps {
   onSortByChange: (sortBy: 'createdAt' | 'priority' | 'dueDate') => void;
   sortOrder: 'asc' | 'desc';
   onSortOrderChange: (sortOrder: 'asc' | 'desc') => void;
+  onMarkAllComplete: () => void;
+  onDeleteCompleted: () => void;
 }
 
 export default function Toolbar({
@@ -25,6 +27,8 @@ export default function Toolbar({
   onSortByChange,
   sortOrder,
   onSortOrderChange,
+  onMarkAllComplete,
+  onDeleteCompleted,
 }: ToolbarProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
@@ -90,6 +94,20 @@ export default function Toolbar({
             className={`px-3 py-1 rounded ${filter === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
           >
             Completed
+          </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={onMarkAllComplete}
+            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Mark All Complete
+          </button>
+          <button
+            onClick={onDeleteCompleted}
+            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Delete Completed
           </button>
         </div>
         <AddButton onAdd={onAdd} />
