@@ -28,6 +28,7 @@ export default function Home() {
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<'all' | 'completed' | 'incomplete'>('all');
 
   const filteredTodos = todos.filter((todo) => {
     const matchesSearch =
@@ -35,7 +36,11 @@ export default function Home() {
       todo.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFolder =
       selectedFolder === null || todo.folderId === selectedFolder;
-    return matchesSearch && matchesFolder;
+    const matchesFilter =
+      filter === 'all' ||
+      (filter === 'completed' && todo.completed) ||
+      (filter === 'incomplete' && !todo.completed);
+    return matchesSearch && matchesFolder && matchesFilter;
   });
 
   useEffect(() => {
@@ -110,6 +115,8 @@ export default function Home() {
           onAdd={handleAddTodo}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          filter={filter}
+          onFilterChange={setFilter}
         />
         <div className="flex-1 p-6 overflow-auto">
           {selectedTodo ? (

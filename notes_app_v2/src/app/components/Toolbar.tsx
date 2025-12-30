@@ -7,12 +7,16 @@ interface ToolbarProps {
   onAdd: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  filter: 'all' | 'completed' | 'incomplete';
+  onFilterChange: (filter: 'all' | 'completed' | 'incomplete') => void;
 }
 
 export default function Toolbar({
   onAdd,
   searchQuery,
   onSearchChange,
+  filter,
+  onFilterChange,
 }: ToolbarProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
@@ -41,7 +45,26 @@ export default function Toolbar({
           </svg>
         </div>
       </div>
-      <AddButton onAdd={onAdd} />
-    </div>
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={() => onFilterChange('all')}
+          className={`px-3 py-1 rounded ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          All
+        </button>
+        <button
+          onClick={() => onFilterChange('incomplete')}
+          className={`px-3 py-1 rounded ${filter === 'incomplete' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          Incomplete
+        </button>
+        <button
+          onClick={() => onFilterChange('completed')}
+          className={`px-3 py-1 rounded ${filter === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          Completed
+        </button>
+        <AddButton onAdd={onAdd} />
+      </div>
   );
 }
