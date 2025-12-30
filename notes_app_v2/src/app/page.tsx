@@ -161,6 +161,8 @@ export default function Home() {
           onDeleteCompleted={handleDeleteCompleted}
           darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}
+          totalTodos={todos.length}
+          completedTodos={todos.filter(t => t.completed).length}
         />
         <div className="flex-1 p-6 overflow-auto">
           {selectedTodo ? (

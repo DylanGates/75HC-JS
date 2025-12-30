@@ -17,6 +17,8 @@ interface ToolbarProps {
   onDeleteCompleted: () => void;
   darkMode: boolean;
   onToggleDarkMode: () => void;
+  totalTodos: number;
+  completedTodos: number;
 }
 
 export default function Toolbar({
@@ -33,11 +35,16 @@ export default function Toolbar({
   onDeleteCompleted,
   darkMode,
   onToggleDarkMode,
+  totalTodos,
+  completedTodos,
 }: ToolbarProps) {
   return (
     <div className={`flex items-center justify-between p-4 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'} border-b border-gray-200 shadow-sm`}>
       <div className="flex items-center space-x-4">
         <h1 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Todos</h1>
+        <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          {completedTodos}/{totalTodos} completed
+        </div>
         <div className="relative">
           <input
             type="text"
