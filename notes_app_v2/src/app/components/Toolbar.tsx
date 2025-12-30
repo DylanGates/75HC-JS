@@ -15,6 +15,8 @@ interface ToolbarProps {
   onSortOrderChange: (sortOrder: 'asc' | 'desc') => void;
   onMarkAllComplete: () => void;
   onDeleteCompleted: () => void;
+  darkMode: boolean;
+  onToggleDarkMode: () => void;
 }
 
 export default function Toolbar({
@@ -29,11 +31,13 @@ export default function Toolbar({
   onSortOrderChange,
   onMarkAllComplete,
   onDeleteCompleted,
+  darkMode,
+  onToggleDarkMode,
 }: ToolbarProps) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
+    <div className={`flex items-center justify-between p-4 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'} border-b border-gray-200 shadow-sm`}>
       <div className="flex items-center space-x-4">
-        <h1 className="text-xl font-semibold text-gray-900">Todos</h1>
+        <h1 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Todos</h1>
         <div className="relative">
           <input
             type="text"
@@ -59,7 +63,7 @@ export default function Toolbar({
       </div>
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
-          <label className="text-sm text-gray-700">Sort by:</label>
+          <label className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Sort by:</label>
           <select
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value as 'createdAt' | 'priority' | 'dueDate')}
@@ -110,7 +114,15 @@ export default function Toolbar({
             Delete Completed
           </button>
         </div>
-        <AddButton onAdd={onAdd} />
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={onToggleDarkMode}
+            className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+          <AddButton onAdd={onAdd} />
+        </div>
       </div>
   );
 }

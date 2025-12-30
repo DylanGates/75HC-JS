@@ -31,6 +31,7 @@ export default function Home() {
   const [filter, setFilter] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [sortBy, setSortBy] = useState<'createdAt' | 'priority' | 'dueDate'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [darkMode, setDarkMode] = useState(false);
 
   const filteredTodos = todos.filter((todo) => {
     const matchesSearch =
@@ -135,7 +136,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100'}`}>
       <SideBar
         todos={filteredTodos}
         folders={folders}
@@ -143,8 +144,9 @@ export default function Home() {
         onSelectTodo={handleSelectTodo}
         onDeleteTodo={handleDeleteTodo}
         onSelectFolder={setSelectedFolder}
+        darkMode={darkMode}
       />
-      <div className="flex-1 flex flex-col bg-white">
+      <div className={`flex-1 flex flex-col ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <Toolbar
           onAdd={handleAddTodo}
           searchQuery={searchQuery}
@@ -157,6 +159,8 @@ export default function Home() {
           onSortOrderChange={setSortOrder}
           onMarkAllComplete={handleMarkAllComplete}
           onDeleteCompleted={handleDeleteCompleted}
+          darkMode={darkMode}
+          onToggleDarkMode={() => setDarkMode(!darkMode)}
         />
         <div className="flex-1 p-6 overflow-auto">
           {selectedTodo ? (

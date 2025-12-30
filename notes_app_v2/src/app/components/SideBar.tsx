@@ -23,6 +23,7 @@ interface SideBarProps {
   onSelectTodo: (todo: Todo) => void;
   onDeleteTodo: (id: string) => void;
   onSelectFolder: (folderId: string | null) => void;
+  darkMode: boolean;
 }
 
 export default function SideBar({
@@ -32,27 +33,28 @@ export default function SideBar({
   onSelectTodo,
   onDeleteTodo,
   onSelectFolder,
+  darkMode,
 }: SideBarProps) {
   return (
-    <div className="w-80 bg-white border-r border-gray-200 p-4 shadow-sm">
+    <div className={`w-80 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'} border-r border-gray-200 p-4 shadow-sm`}>
       <Folders
         folders={folders}
         selectedFolder={selectedFolder}
         onSelectFolder={onSelectFolder}
       />
-      <h2 className="text-lg font-semibold mb-4 text-gray-700">Todos</h2>
+      <h2 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-700'}`}>Todos</h2>
       <div className="space-y-3">
         {todos.map((todo) => (
           <div
             key={todo.id}
-            className={`p-4 bg-gray-50 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 transition-colors group relative border ${
-              todo.completed ? 'border-green-200 bg-green-50' : 'border-gray-100'
+            className={`p-4 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-50 hover:bg-gray-100'} rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 transition-colors group relative border ${
+              todo.completed ? 'border-green-200 bg-green-50' : darkMode ? 'border-gray-600' : 'border-gray-100'
             }`}
           >
             <div onClick={() => onSelectTodo(todo)} className="flex-1">
               <div className="flex items-center justify-between mb-1">
                 <h3 className={`font-medium truncate text-base ${
-                  todo.completed ? 'line-through text-gray-500' : 'text-gray-900'
+                  todo.completed ? 'line-through text-gray-500' : darkMode ? 'text-white' : 'text-gray-900'
                 }`}>
                   {todo.title || "Untitled"}
                 </h3>
@@ -64,7 +66,7 @@ export default function SideBar({
                   {todo.priority}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 truncate leading-relaxed">
+              <p className={`text-sm truncate leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 {todo.description}
               </p>
               {todo.dueDate && (
@@ -72,7 +74,7 @@ export default function SideBar({
                   Due: {todo.dueDate.toLocaleDateString()}
                 </p>
               )}
-              <p className="text-xs text-gray-400 mt-2">
+              <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>
                 {todo.createdAt.toLocaleDateString()}
               </p>
             </div>
