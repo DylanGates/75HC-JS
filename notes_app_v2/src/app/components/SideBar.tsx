@@ -7,6 +7,7 @@ interface Todo {
   description: string;
   completed: boolean;
   createdAt: Date;
+  priority: 'low' | 'medium' | 'high';
 }
 
 interface Folder {
@@ -48,11 +49,20 @@ export default function SideBar({
             }`}
           >
             <div onClick={() => onSelectTodo(todo)} className="flex-1">
-              <h3 className={`font-medium truncate text-base mb-1 ${
-                todo.completed ? 'line-through text-gray-500' : 'text-gray-900'
-              }`}>
-                {todo.title || "Untitled"}
-              </h3>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className={`font-medium truncate text-base ${
+                  todo.completed ? 'line-through text-gray-500' : 'text-gray-900'
+                }`}>
+                  {todo.title || "Untitled"}
+                </h3>
+                <span className={`text-xs px-2 py-1 rounded ${
+                  todo.priority === 'high' ? 'bg-red-100 text-red-800' :
+                  todo.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-green-100 text-green-800'
+                }`}>
+                  {todo.priority}
+                </span>
+              </div>
               <p className="text-sm text-gray-600 truncate leading-relaxed">
                 {todo.description}
               </p>
