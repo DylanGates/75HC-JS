@@ -1,0 +1,167 @@
+"use client";
+
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import SideBar from "./components/SideBar";
+import Toolbar from "./components/Toolbar";
+import FormattingToolbar from "./components/FormattingToolbar";
+
+interface Folder {
+  id: string;
+  name: string;
+}
+
+interface Todo {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  createdAt: Date;
+  folderId: string;
+}
+
+export default function Home() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredTodos = todos.filter((todo) => {
+    const matchesSearch =
+      todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      todo.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFolder =
+      selectedFolder === null || todo.folderId === selectedFolder;
+    return matchesSearch && matchesFolder;
+  });
+
+  useEffect(() => {
+    // Load todos and folders from localStorage
+    const savedTodos = localStorage.getItem("todos");
+    if (savedTodos) {
+      const parsedTodos = JSON.parse(savedTodos).map((todo: any) => ({
+        ...todo,
+        createdAt: new Date(todo.createdAt),
+      }));
+      setTodos(parsedTodos);
+    }
+    const savedFolders = localStorage.getItem("folders");
+    if (savedFolders) {
+      setFolders(JSON.parse(savedFolders));
+    } else {
+      // Default folder
+      setFolders([{ id: "default", name: "Todos" }]);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save todos and folders to localStorage
+    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("folders", JSON.stringify(folders));
+  }, [todos, folders]);
+
+  const handleAddTodo = () => {
+    const newTodo: Todo = {
+      id: Date.now().toString(),
+      title: "New Todo",
+      description: "",
+      completed: false,
+      createdAt: new Date(),
+      folderId: selectedFolder || "default",
+    };
+    setTodos([newTodo, ...todos]);
+    setSelectedTodo(newTodo);
+  };
+
+  const handleSelectTodo = (todo: Todo) => {
+    setSelectedTodo(todo);
+  };
+
+  const handleUpdateTodo = (updatedTodo: Todo) => {
+    setTodos(
+      todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
+    );
+    setSelectedTodo(updatedTodo);
+  };
+
+  const handleDeleteTodo = (id: string) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+    if (selectedTodo?.id === id) {
+      setSelectedTodo(null);
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      <SideBar
+        todos={filteredTodos}
+        folders={folders}
+        selectedFolder={selectedFolder}
+        onSelectTodo={handleSelectTodo}
+        onDeleteTodo={handleDeleteTodo}
+        onSelectFolder={setSelectedFolder}
+      />
+      <div className="flex-1 flex flex-col bg-white">
+        <Toolbar
+          onAdd={handleAddTodo}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+        <div className="flex-1 p-6 overflow-auto">
+          {selectedTodo ? (
+            <div className="max-w-4xl mx-auto">
+              <div className="mt-4">
+                <input
+                  type="text"
+                  value={selectedTodo.title}
+                  onChange={(e) =>
+                    handleUpdateTodo({ ...selectedTodo, title: e.target.value })
+                  }
+                  className="w-full text-3xl font-light mb-6 border-none outline-none placeholder-gray-300 text-gray-900"
+                  placeholder="Todo Title"
+                />
+                <textarea
+                  value={selectedTodo.description}
+                  onChange={(e) =>
+                    handleUpdateTodo({
+                      ...selectedTodo,
+                      description: e.target.value,
+                    })
+                  }
+                  className="w-full h-96 border-none outline-none resize-none text-lg leading-relaxed placeholder-gray-400 text-gray-800"
+                  placeholder="Todo description..."
+                />
+                <div className="mt-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedTodo.completed}
+                      onChange={(e) =>
+                        handleUpdateTodo({
+                          ...selectedTodo,
+                          completed: e.target.checked,
+                        })
+                      }
+                      className="mr-2"
+                    />
+                    Completed
+                  </label>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <div className="text-center">
+                <div className="text-6xl mb-4">✅</div>
+                <p className="text-xl">
+                  Select a todo to view or create a new one.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
