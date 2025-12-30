@@ -19,6 +19,7 @@ interface Todo {
   createdAt: Date;
   folderId: string;
   priority: 'low' | 'medium' | 'high';
+  dueDate?: Date;
 }
 
 export default function Home() {
@@ -168,6 +169,22 @@ export default function Home() {
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                   </select>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    value={selectedTodo.dueDate ? selectedTodo.dueDate.toISOString().split('T')[0] : ''}
+                    onChange={(e) =>
+                      handleUpdateTodo({
+                        ...selectedTodo,
+                        dueDate: e.target.value ? new Date(e.target.value) : undefined,
+                      })
+                    }
+                    className="border border-gray-300 rounded px-3 py-2"
+                  />
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ interface Todo {
   completed: boolean;
   createdAt: Date;
   priority: 'low' | 'medium' | 'high';
+  dueDate?: Date;
 }
 
 interface Folder {
@@ -66,6 +67,11 @@ export default function SideBar({
               <p className="text-sm text-gray-600 truncate leading-relaxed">
                 {todo.description}
               </p>
+              {todo.dueDate && (
+                <p className="text-xs text-orange-600 mt-1">
+                  Due: {todo.dueDate.toLocaleDateString()}
+                </p>
+              )}
               <p className="text-xs text-gray-400 mt-2">
                 {todo.createdAt.toLocaleDateString()}
               </p>
