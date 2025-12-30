@@ -9,6 +9,10 @@ interface ToolbarProps {
   onSearchChange: (query: string) => void;
   filter: 'all' | 'completed' | 'incomplete';
   onFilterChange: (filter: 'all' | 'completed' | 'incomplete') => void;
+  sortBy: 'createdAt' | 'priority' | 'dueDate';
+  onSortByChange: (sortBy: 'createdAt' | 'priority' | 'dueDate') => void;
+  sortOrder: 'asc' | 'desc';
+  onSortOrderChange: (sortOrder: 'asc' | 'desc') => void;
 }
 
 export default function Toolbar({
@@ -17,6 +21,10 @@ export default function Toolbar({
   onSearchChange,
   filter,
   onFilterChange,
+  sortBy,
+  onSortByChange,
+  sortOrder,
+  onSortOrderChange,
 }: ToolbarProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
@@ -45,25 +53,45 @@ export default function Toolbar({
           </svg>
         </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={() => onFilterChange('all')}
-          className={`px-3 py-1 rounded ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => onFilterChange('incomplete')}
-          className={`px-3 py-1 rounded ${filter === 'incomplete' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-        >
-          Incomplete
-        </button>
-        <button
-          onClick={() => onFilterChange('completed')}
-          className={`px-3 py-1 rounded ${filter === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-        >
-          Completed
-        </button>
+      <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
+          <label className="text-sm text-gray-700">Sort by:</label>
+          <select
+            value={sortBy}
+            onChange={(e) => onSortByChange(e.target.value as 'createdAt' | 'priority' | 'dueDate')}
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+          >
+            <option value="createdAt">Date</option>
+            <option value="priority">Priority</option>
+            <option value="dueDate">Due Date</option>
+          </select>
+          <button
+            onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
+            className="px-2 py-1 border border-gray-300 rounded text-sm"
+          >
+            {sortOrder === 'asc' ? '↑' : '↓'}
+          </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => onFilterChange('all')}
+            className={`px-3 py-1 rounded ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => onFilterChange('incomplete')}
+            className={`px-3 py-1 rounded ${filter === 'incomplete' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            Incomplete
+          </button>
+          <button
+            onClick={() => onFilterChange('completed')}
+            className={`px-3 py-1 rounded ${filter === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            Completed
+          </button>
+        </div>
         <AddButton onAdd={onAdd} />
       </div>
   );

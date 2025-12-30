@@ -29,6 +29,8 @@ export default function Home() {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<'all' | 'completed' | 'incomplete'>('all');
+  const [sortBy, setSortBy] = useState<'createdAt' | 'priority' | 'dueDate'>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const filteredTodos = todos.filter((todo) => {
     const matchesSearch =
@@ -41,6 +43,27 @@ export default function Home() {
       (filter === 'completed' && todo.completed) ||
       (filter === 'incomplete' && !todo.completed);
     return matchesSearch && matchesFolder && matchesFilter;
+  }).sort((a, b) => {
+    let aValue: any, bValue: any;
+    switch (sortBy) {
+      case 'priority':
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        aValue = priorityOrder[a.priority];
+        bValue = priorityOrder[b.priority];
+        break;
+      case 'dueDate':
+        aValue = a.dueDate ? a.dueDate.getTime() : Infinity;
+        bValue = b.dueDate ? b.dueDate.getTime() : Infinity;
+        break;
+      default:
+        aValue = a.createdAt.getTime();
+        bValue = b.createdAt.getTime();
+    }
+    if (sortOrder === 'asc') {
+      return aValue - bValue;
+    } else {
+      return bValue - aValue;
+    }
   });
 
   useEffect(() => {
@@ -117,6 +140,10 @@ export default function Home() {
           onSearchChange={setSearchQuery}
           filter={filter}
           onFilterChange={setFilter}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+          sortOrder={sortOrder}
+          onSortOrderChange={setSortOrder}
         />
         <div className="flex-1 p-6 overflow-auto">
           {selectedTodo ? (
