@@ -19,6 +19,9 @@ interface ToolbarProps {
   onToggleDarkMode: () => void;
   totalTodos: number;
   completedTodos: number;
+  categoryFilter: string;
+  onCategoryFilterChange: (category: string) => void;
+  categories: string[];
 }
 
 export default function Toolbar({
@@ -37,6 +40,9 @@ export default function Toolbar({
   onToggleDarkMode,
   totalTodos,
   completedTodos,
+  categoryFilter,
+  onCategoryFilterChange,
+  categories,
 }: ToolbarProps) {
   return (
     <div className={`flex items-center justify-between p-4 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'} border-b border-gray-200 shadow-sm`}>
@@ -106,6 +112,19 @@ export default function Toolbar({
           >
             Completed
           </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <label className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Category:</label>
+          <select
+            value={categoryFilter}
+            onChange={(e) => onCategoryFilterChange(e.target.value)}
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+          >
+            <option value="">All</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
         </div>
         <div className="flex items-center space-x-2">
           <button

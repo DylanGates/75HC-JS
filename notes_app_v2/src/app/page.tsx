@@ -33,6 +33,7 @@ export default function Home() {
   const [sortBy, setSortBy] = useState<'createdAt' | 'priority' | 'dueDate'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [darkMode, setDarkMode] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
 
   const filteredTodos = todos.filter((todo) => {
     const matchesSearch =
@@ -44,7 +45,9 @@ export default function Home() {
       filter === 'all' ||
       (filter === 'completed' && todo.completed) ||
       (filter === 'incomplete' && !todo.completed);
-    return matchesSearch && matchesFolder && matchesFilter;
+    const matchesCategory =
+      categoryFilter === '' || todo.category === categoryFilter;
+    return matchesSearch && matchesFolder && matchesFilter && matchesCategory;
   }).sort((a, b) => {
     let aValue: any, bValue: any;
     switch (sortBy) {
@@ -118,7 +121,7 @@ export default function Home() {
     setSelectedTodo(updatedTodo);
   };
 
-  const handleDeleteTodo = (id: string) => {
+  const categories = Array.from(new Set(todos.map(t => t.category).filter(Boolean))) as string[];
     setTodos(todos.filter((todo) => todo.id !== id));
     if (selectedTodo?.id === id) {
       setSelectedTodo(null);
@@ -164,6 +167,9 @@ export default function Home() {
           onToggleDarkMode={() => setDarkMode(!darkMode)}
           totalTodos={todos.length}
           completedTodos={todos.filter(t => t.completed).length}
+          categoryFilter={categoryFilter}
+          onCategoryFilterChange={setCategoryFilter}
+          categories={categories}
         />
         <div className="flex-1 p-6 overflow-auto">
           {selectedTodo ? (
