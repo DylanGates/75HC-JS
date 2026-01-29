@@ -23,11 +23,17 @@ export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   // Commit 6: current weather fetch and basic card display
-  const [cities, setCities] = useState<string[]>([
-    "London",
-    "New York",
-    "Tokyo",
-  ]);
+  const [cities, setCities] = useState<string[]>(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const raw = localStorage.getItem("weatherCities");
+        if (raw) return JSON.parse(raw);
+      }
+    } catch (e) {
+      // ignore
+    }
+    return ["London", "New York", "Tokyo"];
+  });
   const [inputValue, setInputValue] = useState("");
   const [weatherData, setWeatherData] = useState<Record<string, any> | null>(
     null,
@@ -61,6 +67,15 @@ export default function Home() {
       setLoading(false);
       setLastUpdated(new Date());
     });
+  }, [cities]);
+
+  // Commit 14: persist cities to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("weatherCities", JSON.stringify(cities));
+    } catch (e) {
+      // ignore storage errors
+    }
   }, [cities]);
 
   // Commit 12: dark mode effect
