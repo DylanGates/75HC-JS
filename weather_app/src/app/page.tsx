@@ -142,6 +142,25 @@ export default function Home() {
                     <Skeleton className="h-12 w-full" />
                   </Card>
                 </div>
+              ) : weatherData ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {cities.map((c) => {
+                    const d = weatherData[c];
+                    if (!d) return (
+                      <Card key={c} className="p-4">
+                        <div className="font-semibold">{c}</div>
+                        <div className="text-sm text-muted-foreground">No data</div>
+                      </Card>
+                    );
+                    return (
+                      <Card key={c} className="p-4">
+                        <div className="font-semibold">{d.location.name}</div>
+                        <div className="text-sm text-muted-foreground">{d.location.country}</div>
+                        <div className="text-2xl font-bold mt-2">{d.current.temp_c}°C</div>
+                      </Card>
+                    );
+                  })}
+                </div>
               ) : (
                 <div className="text-sm text-muted-foreground">
                   No loading activity — try Search or Add City.
