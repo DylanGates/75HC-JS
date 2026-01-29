@@ -3,6 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+	Combobox,
+	ComboboxTrigger,
+	ComboboxInput,
+	ComboboxContent,
+	ComboboxItem,
+} from "@/components/ui/combobox";
 import { useState } from "react";
 
 export default function Home() {
@@ -34,7 +42,53 @@ export default function Home() {
 						<div className="mb-4">
 							<p className="text-sm text-muted-foreground">Add cities to begin monitoring current weather and a short forecast.</p>
 						</div>
-						<Skeleton className="h-8 w-1/2 mt-2" />
+
+						{/* Commit 3: location input + combobox */}
+						<form className="flex gap-2 mb-4" onSubmit={(e) => e.preventDefault()}>
+							<Combobox>
+								<ComboboxTrigger className="flex-1">
+									<ComboboxInput placeholder="Search city or select" />
+								</ComboboxTrigger>
+								<ComboboxContent>
+									<ComboboxItem value="London">London</ComboboxItem>
+									<ComboboxItem value="New York">New York</ComboboxItem>
+									<ComboboxItem value="Tokyo">Tokyo</ComboboxItem>
+								</ComboboxContent>
+							</Combobox>
+							<Input placeholder="Or type new city" className="w-64" />
+						</form>
+
+						{/* Commit 4: add/search button */}
+						<div className="flex gap-2 mb-6">
+							<Button onClick={() => { /* add/search handler to implement */ }}>
+								Search
+							</Button>
+							<Button onClick={() => { /* add city handler to implement */ }}>
+								Add City
+							</Button>
+						</div>
+
+						{/* Commit 5: loading skeleton state example */}
+						<div>
+							<p className="text-sm mb-2">Example loading state:</p>
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+								<Card className="p-4">
+									<Skeleton className="h-6 w-3/4 mb-2" />
+									<Skeleton className="h-4 w-1/2 mb-2" />
+									<Skeleton className="h-12 w-full" />
+								</Card>
+								<Card className="p-4">
+									<Skeleton className="h-6 w-3/4 mb-2" />
+									<Skeleton className="h-4 w-1/2 mb-2" />
+									<Skeleton className="h-12 w-full" />
+								</Card>
+								<Card className="p-4">
+									<Skeleton className="h-6 w-3/4 mb-2" />
+									<Skeleton className="h-4 w-1/2 mb-2" />
+									<Skeleton className="h-12 w-full" />
+								</Card>
+							</div>
+						</div>
 					</CardContent>
 				</Card>
 			</main>
