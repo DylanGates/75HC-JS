@@ -40,6 +40,30 @@ export default function Home() {
   );
   const [error, setError] = useState<string | null>(null);
 
+  // Commit 15: add current-location lookup
+  async function handleAddCurrentLocation() {
+    if (!navigator.geolocation) {
+      setError("Geolocation not supported in this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const key = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+          const url = `https://api.weatherapi.com/v1/current.json?key=${key}&q=${latitude},${longitude}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const city = data?.location?.name;
+          if (city && !cities.includes(city)) setCities((s) => [...s, city]);
+        } catch (e: any) {
+          setError(e.message || String(e));
+        }
+      },
+      (err) => setError(err.message || String(err)),
+    );
+  }
+
   useEffect(() => {
     async function fetchForCity(city: string) {
       try {
@@ -161,6 +185,9 @@ export default function Home() {
                 aria-label="Add city"
               >
                 Add City
+              </Button>
+              <Button onClick={handleAddCurrentLocation} aria-label="Add current location">
+                Use My Location
               </Button>
             </div>
             {error && (
