@@ -30,7 +30,7 @@ export default function Home() {
     async function fetchForCity(city: string) {
       try {
         const key = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
-        const url = `https://api.weatherapi.com/v1/current.json?key=${key}&q=${encodeURIComponent(city)}`;
+        const url = `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=${encodeURIComponent(city)}&days=3`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch ${city}`);
         return await res.json();
@@ -164,7 +164,18 @@ export default function Home() {
                       <Card key={c} className="p-4">
                         <div className="font-semibold">{d.location.name}</div>
                         <div className="text-sm text-muted-foreground">{d.location.country}</div>
-                        <div className="text-2xl font-bold mt-2">{d.current.temp_c}°C</div>
+                            <div className="text-2xl font-bold mt-2">{d.current.temp_c}°C</div>
+                            <div className="mt-3 w-full space-y-2">
+                              <div className="text-sm font-medium">3-Day Forecast</div>
+                              <div className="flex gap-2 justify-center">
+                                {d.forecast?.forecastday?.map((fd: any) => (
+                                  <div key={fd.date} className="text-center text-xs">
+                                    <div>{new Date(fd.date).toLocaleDateString()}</div>
+                                    <div className="font-semibold">{fd.day.maxtemp_c}° / {fd.day.mintemp_c}°</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
                       </Card>
                     );
                   })}
