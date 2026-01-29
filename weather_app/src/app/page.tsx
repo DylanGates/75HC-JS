@@ -15,6 +15,7 @@ import { useState } from "react";
 
 export default function Home() {
 	const [darkMode, setDarkMode] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	return (
 		<div className={`${darkMode ? "dark" : ""}`}>
@@ -60,10 +61,10 @@ export default function Home() {
 
 						{/* Commit 4: add/search button */}
 						<div className="flex gap-2 mb-6">
-							<Button onClick={() => { /* add/search handler to implement */ }}>
+							<Button onClick={() => { setLoading(true); setTimeout(() => setLoading(false), 800); }} aria-label="Search city">
 								Search
 							</Button>
-							<Button onClick={() => { /* add city handler to implement */ }}>
+							<Button onClick={() => { setLoading(true); setTimeout(() => setLoading(false), 800); }} aria-label="Add city">
 								Add City
 							</Button>
 						</div>
