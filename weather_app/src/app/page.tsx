@@ -191,7 +191,7 @@ export default function Home() {
               </Button>
             </div>
             {error && (
-              <div className="mb-4">
+              <div className="mb-4" role="alert" aria-live="assertive">
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -232,7 +232,7 @@ export default function Home() {
                         </Card>
                       );
                     return (
-                      <Card key={c} className="p-4 relative">
+                      <Card key={c} className="p-4 relative" role="article" aria-labelledby={`city-${c}`}>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -242,7 +242,7 @@ export default function Home() {
                         >
                           Remove
                         </Button>
-                        <div className="font-semibold">{d.location.name}</div>
+                        <div id={`city-${c}`} className="font-semibold">{d.location.name}</div>
                         <div className="text-sm text-muted-foreground">
                           {d.location.country}
                         </div>
