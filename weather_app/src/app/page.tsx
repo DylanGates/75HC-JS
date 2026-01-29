@@ -20,6 +20,7 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isCelsius, setIsCelsius] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   // Commit 6: current weather fetch and basic card display
   const [cities, setCities] = useState<string[]>([
@@ -58,6 +59,7 @@ export default function Home() {
       });
       setWeatherData(map);
       setLoading(false);
+      setLastUpdated(new Date());
     });
   }, [cities]);
 
@@ -78,6 +80,12 @@ export default function Home() {
               <Switch checked={isCelsius} onCheckedChange={setIsCelsius} />
               <span className="text-sm">°C</span>
             </div>
+            {lastUpdated && (
+              <Badge variant="secondary">Updated: {lastUpdated.toLocaleTimeString()}</Badge>
+            )}
+            <Button variant="outline" onClick={() => setCities([...cities])}>
+              Refresh
+            </Button>
             <Button variant="ghost" onClick={() => setDarkMode(!darkMode)}>
               Toggle Theme
             </Button>
