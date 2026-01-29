@@ -122,6 +122,14 @@ export default function Home() {
                 Add City
               </Button>
             </div>
+            {error && (
+              <div className="mb-4">
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              </div>
+            )}
+
             <div>
               <p className="text-sm mb-2">Example loading state:</p>
               {loading ? (
