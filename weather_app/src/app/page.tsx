@@ -16,6 +16,43 @@ import {
 } from "@/components/ui/combobox";
 import { useState } from "react";
 
+interface WeatherLocation {
+  name: string;
+  region?: string;
+  country?: string;
+  lat?: number;
+  lon?: number;
+  tz_id?: string;
+  localtime_epoch?: number;
+  localtime?: string;
+}
+
+interface CurrentWeather {
+  temp_c: number;
+  temp_f: number;
+  condition: { text: string; icon: string };
+  humidity?: number;
+  wind_kph?: number;
+  wind_mph?: number;
+}
+
+interface ForecastDay {
+  date: string;
+  day: {
+    maxtemp_c: number;
+    mintemp_c: number;
+    maxtemp_f?: number;
+    mintemp_f?: number;
+    condition: { text: string; icon: string };
+  };
+}
+
+interface WeatherAPIResponse {
+  location: WeatherLocation;
+  current: CurrentWeather;
+  forecast?: { forecastday: ForecastDay[] };
+}
+
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,15 +66,16 @@ export default function Home() {
         const raw = localStorage.getItem("weatherCities");
         if (raw) return JSON.parse(raw);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
     return ["London", "New York", "Tokyo"];
   });
   const [inputValue, setInputValue] = useState("");
-  const [weatherData, setWeatherData] = useState<Record<string, any> | null>(
-    null,
-  );
+  const [weatherData, setWeatherData] = useState<Record<
+    string,
+    WeatherAPIResponse
+  > | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Commit 15: add current-location lookup
@@ -56,25 +94,33 @@ export default function Home() {
           const data = await res.json();
           const city = data?.location?.name;
           if (city && !cities.includes(city)) setCities((s) => [...s, city]);
-        } catch (e: any) {
-          setError(e.message || String(e));
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          setError(msg);
         }
       },
-      (err) => setError(err.message || String(err)),
+      (err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        setError(msg);
+      },
     );
   }
 
   useEffect(() => {
-    async function fetchForCity(city: string) {
+    async function fetchForCity(
+      city: string,
+    ): Promise<WeatherAPIResponse | null> {
       try {
         const key = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
         const url = `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=${encodeURIComponent(city)}&days=3`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch ${city}`);
-        return await res.json();
-      } catch (e: any) {
-        console.error(e);
-        setError(e.message || String(e));
+        const data = (await res.json()) as WeatherAPIResponse;
+        return data;
+      } catch (err: unknown) {
+        console.error(err);
+        const msg = err instanceof Error ? err.message : String(err);
+        setError(msg);
         return null;
       }
     }
@@ -83,7 +129,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     Promise.all(cities.map(fetchForCity)).then((results) => {
-      const map: Record<string, any> = {};
+      const map: Record<string, WeatherAPIResponse> = {};
       results.forEach((r, i) => {
         if (r && r.location && r.current) map[cities[i]] = r;
       });
@@ -97,7 +143,7 @@ export default function Home() {
   useEffect(() => {
     try {
       localStorage.setItem("weatherCities", JSON.stringify(cities));
-    } catch (e) {
+    } catch {
       // ignore storage errors
     }
   }, [cities]);
@@ -126,7 +172,9 @@ export default function Home() {
               <span className="text-sm">°C</span>
             </div>
             {lastUpdated && (
-              <Badge variant="secondary">Updated: {lastUpdated.toLocaleTimeString()}</Badge>
+              <Badge variant="secondary">
+                Updated: {lastUpdated.toLocaleTimeString()}
+              </Badge>
             )}
             <Button variant="outline" onClick={() => setCities([...cities])}>
               Refresh
@@ -164,7 +212,14 @@ export default function Home() {
                   <ComboboxItem value="Tokyo">Tokyo</ComboboxItem>
                 </ComboboxContent>
               </Combobox>
-              <Input placeholder="Or type new city" className="w-64" />
+              <Input
+                placeholder="Or type new city"
+                className="w-64"
+                value={inputValue}
+                onChange={(e) =>
+                  setInputValue((e.target as HTMLInputElement).value)
+                }
+              />
             </form>
 
             <div className="flex gap-2 mb-6">
@@ -179,14 +234,26 @@ export default function Home() {
               </Button>
               <Button
                 onClick={() => {
-                  setLoading(true);
-                  setTimeout(() => setLoading(false), 800);
+                  const trimmed = inputValue.trim();
+                  if (!trimmed) {
+                    setError("Please enter a city name.");
+                    return;
+                  }
+                  if (cities.includes(trimmed)) {
+                    setError("City already added.");
+                    return;
+                  }
+                  setCities((s) => [...s, trimmed]);
+                  setInputValue("");
                 }}
                 aria-label="Add city"
               >
                 Add City
               </Button>
-              <Button onClick={handleAddCurrentLocation} aria-label="Add current location">
+              <Button
+                onClick={handleAddCurrentLocation}
+                aria-label="Add current location"
+              >
                 Use My Location
               </Button>
             </div>
@@ -232,29 +299,39 @@ export default function Home() {
                         </Card>
                       );
                     return (
-                      <Card key={c} className="p-4 relative" role="article" aria-labelledby={`city-${c}`}>
+                      <Card
+                        key={c}
+                        className="p-4 relative"
+                        role="article"
+                        aria-labelledby={`city-${c}`}
+                      >
                         <Button
                           variant="ghost"
                           size="sm"
                           className="absolute top-2 right-2"
-                          onClick={() => setCities(cities.filter((x) => x !== c))}
+                          onClick={() =>
+                            setCities(cities.filter((x) => x !== c))
+                          }
                           aria-label={`Remove ${c}`}
                         >
                           Remove
                         </Button>
-                        <div id={`city-${c}`} className="font-semibold">{d.location.name}</div>
+                        <div id={`city-${c}`} className="font-semibold">
+                          {d.location.name}
+                        </div>
                         <div className="text-sm text-muted-foreground">
                           {d.location.country}
                         </div>
                         <div className="text-2xl font-bold mt-2">
-                          {isCelsius ? d.current.temp_c : d.current.temp_f}°{isCelsius ? 'C' : 'F'}
+                          {isCelsius ? d.current.temp_c : d.current.temp_f}°
+                          {isCelsius ? "C" : "F"}
                         </div>
                         <div className="mt-3 w-full space-y-2">
                           <div className="text-sm font-medium">
                             3-Day Forecast
                           </div>
                           <div className="flex gap-2 justify-center">
-                            {d.forecast?.forecastday?.map((fd: any) => (
+                            {d.forecast?.forecastday?.map((fd: ForecastDay) => (
                               <div
                                 key={fd.date}
                                 className="text-center text-xs"
@@ -263,7 +340,14 @@ export default function Home() {
                                   {new Date(fd.date).toLocaleDateString()}
                                 </div>
                                 <div className="font-semibold">
-                                  {isCelsius ? fd.day.maxtemp_c : fd.day.maxtemp_f}° / {isCelsius ? fd.day.mintemp_c : fd.day.mintemp_f}°
+                                  {isCelsius
+                                    ? fd.day.maxtemp_c
+                                    : fd.day.maxtemp_f}
+                                  ° /{" "}
+                                  {isCelsius
+                                    ? fd.day.mintemp_c
+                                    : fd.day.mintemp_f}
+                                  °
                                 </div>
                               </div>
                             ))}
