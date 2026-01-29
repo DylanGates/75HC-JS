@@ -19,11 +19,18 @@ import { useState } from "react";
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isCelsius, setIsCelsius] = useState(true);
 
   // Commit 6: current weather fetch and basic card display
-  const [cities, setCities] = useState<string[]>(["London", "New York", "Tokyo"]);
+  const [cities, setCities] = useState<string[]>([
+    "London",
+    "New York",
+    "Tokyo",
+  ]);
   const [inputValue, setInputValue] = useState("");
-  const [weatherData, setWeatherData] = useState<Record<string, any> | null>(null);
+  const [weatherData, setWeatherData] = useState<Record<string, any> | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -66,6 +73,11 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-3">
             <Badge>v1</Badge>
+            <div className="flex items-center gap-2">
+              <span className="text-sm">°F</span>
+              <Switch checked={isCelsius} onCheckedChange={setIsCelsius} />
+              <span className="text-sm">°C</span>
+            </div>
             <Button variant="ghost" onClick={() => setDarkMode(!darkMode)}>
               Toggle Theme
             </Button>
@@ -154,28 +166,44 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {cities.map((c) => {
                     const d = weatherData[c];
-                    if (!d) return (
-                      <Card key={c} className="p-4">
-                        <div className="font-semibold">{c}</div>
-                        <div className="text-sm text-muted-foreground">No data</div>
-                      </Card>
-                    );
+                    if (!d)
+                      return (
+                        <Card key={c} className="p-4">
+                          <div className="font-semibold">{c}</div>
+                          <div className="text-sm text-muted-foreground">
+                            No data
+                          </div>
+                        </Card>
+                      );
                     return (
                       <Card key={c} className="p-4">
                         <div className="font-semibold">{d.location.name}</div>
-                        <div className="text-sm text-muted-foreground">{d.location.country}</div>
-                            <div className="text-2xl font-bold mt-2">{d.current.temp_c}°C</div>
-                            <div className="mt-3 w-full space-y-2">
-                              <div className="text-sm font-medium">3-Day Forecast</div>
-                              <div className="flex gap-2 justify-center">
-                                {d.forecast?.forecastday?.map((fd: any) => (
-                                  <div key={fd.date} className="text-center text-xs">
-                                    <div>{new Date(fd.date).toLocaleDateString()}</div>
-                                    <div className="font-semibold">{fd.day.maxtemp_c}° / {fd.day.mintemp_c}°</div>
-                                  </div>
-                                ))}
+                        <div className="text-sm text-muted-foreground">
+                          {d.location.country}
+                        </div>
+                        <div className="text-2xl font-bold mt-2">
+                          {isCelsius ? d.current.temp_c : d.current.temp_f}°{isCelsius ? 'C' : 'F'}
+                        </div>
+                        <div className="mt-3 w-full space-y-2">
+                          <div className="text-sm font-medium">
+                            3-Day Forecast
+                          </div>
+                          <div className="flex gap-2 justify-center">
+                            {d.forecast?.forecastday?.map((fd: any) => (
+                              <div
+                                key={fd.date}
+                                className="text-center text-xs"
+                              >
+                                <div>
+                                  {new Date(fd.date).toLocaleDateString()}
+                                </div>
+                                <div className="font-semibold">
+                                  {isCelsius ? fd.day.maxtemp_c : fd.day.maxtemp_f}° / {isCelsius ? fd.day.mintemp_c : fd.day.mintemp_f}°
+                                </div>
                               </div>
-                            </div>
+                            ))}
+                          </div>
+                        </div>
                       </Card>
                     );
                   })}
