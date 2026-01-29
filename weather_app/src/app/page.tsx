@@ -190,7 +190,16 @@ export default function Home() {
                         </Card>
                       );
                     return (
-                      <Card key={c} className="p-4">
+                      <Card key={c} className="p-4 relative">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={() => setCities(cities.filter((x) => x !== c))}
+                          aria-label={`Remove ${c}`}
+                        >
+                          Remove
+                        </Button>
                         <div className="font-semibold">{d.location.name}</div>
                         <div className="text-sm text-muted-foreground">
                           {d.location.country}
