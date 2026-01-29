@@ -4,6 +4,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
+import { useEffect } from "react";
 import {
   Combobox,
   ComboboxTrigger,
@@ -16,6 +19,40 @@ import { useState } from "react";
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Commit 6: current weather fetch and basic card display
+  const [cities, setCities] = useState<string[]>(["London", "New York", "Tokyo"]);
+  const [inputValue, setInputValue] = useState("");
+  const [weatherData, setWeatherData] = useState<Record<string, any> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchForCity(city: string) {
+      try {
+        const key = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+        const url = `https://api.weatherapi.com/v1/current.json?key=${key}&q=${encodeURIComponent(city)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch ${city}`);
+        return await res.json();
+      } catch (e: any) {
+        console.error(e);
+        setError(e.message || String(e));
+        return null;
+      }
+    }
+
+    if (cities.length === 0) return;
+    setLoading(true);
+    setError(null);
+    Promise.all(cities.map(fetchForCity)).then((results) => {
+      const map: Record<string, any> = {};
+      results.forEach((r, i) => {
+        if (r && r.location && r.current) map[cities[i]] = r;
+      });
+      setWeatherData(map);
+      setLoading(false);
+    });
+  }, [cities]);
 
   return (
     <div className={`${darkMode ? "dark" : ""}`}>
@@ -48,8 +85,6 @@ export default function Home() {
                 forecast.
               </p>
             </div>
-
-            {/* Commit 3: location input + combobox */}
             <form
               className="flex gap-2 mb-4"
               onSubmit={(e) => e.preventDefault()}
@@ -67,7 +102,6 @@ export default function Home() {
               <Input placeholder="Or type new city" className="w-64" />
             </form>
 
-            {/* Commit 4: add/search button */}
             <div className="flex gap-2 mb-6">
               <Button
                 onClick={() => {
@@ -88,8 +122,6 @@ export default function Home() {
                 Add City
               </Button>
             </div>
-
-            {/* Commit 5: loading skeleton state example */}
             <div>
               <p className="text-sm mb-2">Example loading state:</p>
               {loading ? (
