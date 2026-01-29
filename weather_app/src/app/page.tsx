@@ -63,6 +63,12 @@ export default function Home() {
     });
   }, [cities]);
 
+  // Commit 12: dark mode effect
+  useEffect(() => {
+    if (darkMode) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
+  }, [darkMode]);
+
   return (
     <div className={`${darkMode ? "dark" : ""}`}>
       <header className="w-full py-6 bg-white dark:bg-gray-900 shadow-sm">
