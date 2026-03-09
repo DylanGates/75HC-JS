@@ -118,14 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const imported = JSON.parse(reader.result);
         if (Array.isArray(imported)) {
           const existing = loadBookmarks();
-          // naive merge: add imported items that don't have same url
-          const urls = new Set(existing.map(x=>x.url));
-          for (const it of imported) {
-            if (it && it.url && !urls.has(it.url)) {
-              existing.push({ id: generateId(), title: it.title || it.url, url: it.url });
-            }
+          // merge and dedupe by url (keep newer imported first)
+          const merged = [...imported.map(it => ({ id: generateId(), title: it.title || it.url, url: it.url })), ...existing];
+          const seen = new Set();
+          const dedup = [];
+          for (const item of merged) {
+            if (!item || !item.url) continue;
+            if (seen.has(item.url)) continue;
+            seen.add(item.url);
+            dedup.push(item);
           }
-          saveBookmarks(existing);
+          saveBookmarks(dedup);
           render();
         } else {
           alert('Import file must be an array of bookmarks');
