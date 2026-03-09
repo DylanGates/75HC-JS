@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bookmarker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Bookmarker</h1>
+    <div class="controls">
+      <input id="title" placeholder="Title" />
+      <input id="url" placeholder="https://example.com" />
+      <button id="addBtn">Add</button>
+      <button id="exportBtn">Export</button>
+      <input id="importFile" type="file" accept="application/json" />
+    </div>
+  </header>
+
+  <main>
+    <ul id="bookmarksList" class="bookmarks"></ul>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
