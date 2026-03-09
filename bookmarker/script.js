@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="meta">
           <a href="${bm.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(bm.title || bm.url)}</a>
           <div class="actions">
+            <button class="edit">Edit</button>
             <button class="remove">Remove</button>
           </div>
         </div>
@@ -47,6 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         removeBookmark(bm.id);
       });
 
+      li.querySelector('.edit').addEventListener('click', () => {
+        const newTitle = prompt('Edit title', bm.title) || bm.title;
+        const newUrl = prompt('Edit URL', bm.url) || bm.url;
+        editBookmark(bm.id, newTitle.trim(), newUrl.trim());
+      });
+
       listEl.appendChild(li);
     }
   }
@@ -55,6 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookmarks = loadBookmarks();
     const bm = { id: generateId(), title: title || url, url };
     bookmarks.unshift(bm);
+    saveBookmarks(bookmarks);
+    render();
+  }
+
+  function editBookmark(id, title, url) {
+    const bookmarks = loadBookmarks();
+    const idx = bookmarks.findIndex(b => b.id === id);
+    if (idx === -1) return;
+    bookmarks[idx].title = title || url;
+    bookmarks[idx].url = url;
     saveBookmarks(bookmarks);
     render();
   }
