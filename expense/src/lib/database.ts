@@ -162,7 +162,7 @@ export function getExpenseStats(): ExpenseStats {
 // Database backup and restore
 export function backupDatabase(): Buffer {
   const db = getDatabase();
-  const backup = db.backup('main');
+  const backup = db.serialize();
   return Buffer.from(backup);
 }
 

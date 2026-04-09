@@ -10,8 +10,8 @@ interface Expense {
   date: string;
 }
 
-export function useLocalStorage(key: string, initialValue: Expense[] = []) {
-  const [storedValue, setStoredValue] = useState<Expense[]>(() => {
+export function useLocalStorage<T = Expense[]>(key: string, initialValue: T = [] as unknown as T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     if (typeof window === 'undefined') {
       return initialValue;
     }
@@ -24,7 +24,7 @@ export function useLocalStorage(key: string, initialValue: Expense[] = []) {
     }
   });
 
-  const setValue = (value: Expense[] | ((val: Expense[]) => Expense[])) => {
+  const setValue = (value: T | ((val: T) => T)) => {
     try {
       const valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);

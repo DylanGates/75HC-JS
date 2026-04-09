@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SummaryCards from '@/components/SummaryCards';
 import ExpenseForm from '@/components/ExpenseForm';
 import ExpenseList from '@/components/ExpenseList';
@@ -24,7 +24,7 @@ export default function ExpenseTracker() {
   const [success, setSuccess] = useState<string>('');
 
   // Initialize offline data manager
-  useState(() => {
+  useEffect(() => {
     offlineDataManager.initialize().catch(console.error);
   }, []);
 
