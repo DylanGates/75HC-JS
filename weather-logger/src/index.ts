@@ -8,8 +8,7 @@ const app = new Hono();
 
 // Configuration
 const WEATHER_API_BASE = "http://api.weatherapi.com/v1";
-const WEATHER_API_KEY =
-  process.env.WEATHER_API_KEY || "d4ac7af8dcbd4c8ea56232156252512";
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 // Types
 interface WeatherLocation {

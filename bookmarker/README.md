@@ -7,6 +7,7 @@ Open `index.html` in a browser to use. Features:
 - Add and remove bookmarks
 - Edit bookmark title/URL
 - Import/Export JSON (merge + dedupe)
+
 # bookmarker
 
 To install dependencies:

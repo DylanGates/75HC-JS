@@ -138,8 +138,7 @@ export default function Home() {
       setLastUpdated(new Date());
     });
   }, [cities]);
-
-  // Commit 14: persist cities to localStorage
+  
   useEffect(() => {
     try {
       localStorage.setItem("weatherCities", JSON.stringify(cities));
