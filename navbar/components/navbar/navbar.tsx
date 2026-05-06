@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { tv } from 'tailwind-variants';
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -100,8 +100,10 @@ export default function Navbar({
     const { theme, setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [isNavVisible, setIsNavVisible] = useState(true);
     const pathname = usePathname();
     const mobileMenuId = "navbar-mobile-menu";
+    const lastScrollTop = useRef(0);
 
     const isActiveLink = (href: string) => pathname === href;
 
@@ -148,6 +150,16 @@ export default function Navbar({
 
             setIsScrolled(scrollTop > 0);
             setScrollProgress(Math.min(100, Math.max(0, progress)));
+
+            if (isOpen || isSearchOpen) {
+                setIsNavVisible(true);
+                lastScrollTop.current = scrollTop;
+                return;
+            }
+
+            const scrollingDown = scrollTop > lastScrollTop.current;
+            setIsNavVisible(!(scrollingDown && scrollTop > 120));
+            lastScrollTop.current = scrollTop;
         };
 
         handleScroll();
@@ -210,7 +222,8 @@ export default function Navbar({
                         variant: variant,
                         transparent: transparent,
                     }),
-                    sticky && isScrolled && "h-14 bg-background/90 shadow-xl backdrop-blur-xl"
+                    sticky && isScrolled && "h-14 bg-background/90 shadow-xl backdrop-blur-xl",
+                    sticky && !isNavVisible && "-translate-y-full"
                 )}
             >
                 <div className="flex items-center gap-3">
