@@ -1,7 +1,10 @@
+'use client';
+
 import Link from "next/link";
 import { tv } from 'tailwind-variants';
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 
@@ -23,38 +26,31 @@ const navlinks = [
 interface NavbarProps {
     sticky?: boolean;
     transparent?: boolean;
-    darkMode?: boolean;
     variant?: "default" | "glass";
 }
 
 const navbarVariants = tv({
-    base: "w-full h-16 flex items-center justify-between px-4 transition-colors duration-300",
+    base: "w-full h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300",
     variants: {
         position: {
             sticky: "fixed top-0 z-50",
             relative: "relative",
         },
         variant: {
-            default: "bg-gray-800 text-white",
-            glass: "bg-white/30 backdrop-blur-md text-gray-800"
+            default: "bg-background/95 text-foreground border-b border-border",
+            glass: "bg-background/80 backdrop-blur-md text-foreground border-b border-border",
         },
         transparent: {
-            true: "bg-transparent",
-            false: ""
-        },
-        darkMode: {
-            true: "dark",
+            true: "bg-transparent text-foreground dark:text-white",
             false: ""
         }
     },
     compoundVariants: [
-    // Transparent variant when not scrolled
         {
             transparent: true,
             scrolled: false,
-            class: "bg-transparent text-white",
+            class: "bg-transparent text-foreground dark:text-white",
         },
-        // Sticky scrolled effects
         {
             position: "sticky",
             scrolled: true,
@@ -64,13 +60,13 @@ const navbarVariants = tv({
             position: "sticky",
             scrolled: true,
             variant: "glass",
-            class: "bg-white/95",
+            class: "bg-background/90",
         },
         {
             position: "sticky",
             scrolled: true,
             variant: "default",
-            class: "bg-gray-900",
+            class: "bg-background/95",
         },
     ],
     defaultVariants: {
@@ -78,20 +74,19 @@ const navbarVariants = tv({
         variant: "default",
         scrolled: false,
         transparent: false,
-        darkMode: false,
     },
 });
 
 export default function Navbar({
     sticky = false,
     transparent = false,
-    darkMode = false,
     variant = "default"
 }: NavbarProps) {
 
     const [isOpen, setIsOpen] = useState(false);
     const { theme, setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
+    const mobileMenuId = "navbar-mobile-menu";
 
     const themeToggle = () => {
         setTheme(theme === "light" ? "dark" : "light");
@@ -99,6 +94,10 @@ export default function Navbar({
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+    };
+
+    const closeMenu = () => {
+        setIsOpen(false);
     };
     
     useEffect(() => {
@@ -121,6 +120,26 @@ export default function Navbar({
         }
     }, [isScrolled, sticky]);
 
+    useEffect(() => {
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                closeMenu();
+            }
+        };
+
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+            window.addEventListener("keydown", handleEscape);
+        } else {
+            document.body.style.overflow = "";
+        }
+
+        return () => {
+            document.body.style.overflow = "";
+            window.removeEventListener("keydown", handleEscape);
+        };
+    }, [isOpen]);
+
     return(
         <>
             <nav
@@ -128,41 +147,97 @@ export default function Navbar({
                     position: sticky ? "sticky" : "relative",
                     variant: variant,
                     transparent: transparent,
-                    darkMode: darkMode
                 })}
             >
-                {/* Logo Section */}
-                <div className="text-xl font-bold">
-                    <Link href="/">MyLogo</Link>
+                <div className="flex items-center gap-3">
+                    <Link href="/" className="text-xl font-bold tracking-tight text-foreground dark:text-white">
+                        MyLogo
+                    </Link>
                 </div>
 
-                {/* Desktop Navigation */}
-                <div className="hidden md:flex space-x-4">
+                <div className="hidden md:flex items-center gap-6">
                     {navlinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
-                            className="hover:text-blue-500 transition-colors"
+                            className="text-sm font-medium text-foreground/75 transition-colors hover:text-foreground dark:text-white/80 dark:hover:text-white"
                         >
                             {link.name}
                         </Link>
                     ))}
                 </div>
 
-                {/* Theme Toggle & CTA Button */}
-                <div className="flex items-center space-x-4">
-                    <button
+                <div className="flex items-center gap-2 md:gap-4">
+                    <Button
+                        variant="outline"
                         onClick={themeToggle}
-                        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+                        className="hidden md:inline-flex rounded-full border-border bg-background/70 px-4 text-foreground hover:bg-accent transition-colors"
                     >
-                        {theme === "light" ? "🌙" : "☀️"}
-                    </button>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
+                        {theme === "light" ? "Dark" : "Light"}
+                    </Button>
+                    <Button variant="default" className="hidden md:inline-flex">
                         Get Started
-                    </button>
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:hidden"
+                        onClick={toggleMenu}
+                        aria-expanded={isOpen}
+                        aria-controls={mobileMenuId}
+                        aria-label="Toggle mobile menu"
+                    >
+                        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                    </Button>
                 </div>
 
             </nav>
+
+            {isOpen && (
+                <div
+                    className="fixed inset-0 top-16 z-40 bg-black/50 md:hidden"
+                    onClick={closeMenu}
+                    aria-hidden="true"
+                />
+            )}
+
+            <div
+                id={mobileMenuId}
+                className={`fixed left-0 right-0 top-16 z-50 border-b border-white/10 bg-gray-900 text-white shadow-2xl transition-all duration-300 md:hidden ${isOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
+            >
+                <div className="flex flex-col gap-2 p-4">
+                    {navlinks.map((link) => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={closeMenu}
+                            className="flex items-center justify-between rounded-2xl border border-white/10 px-4 py-3 text-sm font-medium transition-colors hover:bg-white/10"
+                        >
+                            <span>{link.name}</span>
+                            <span className="text-xs text-white/50">Open</span>
+                        </Link>
+                    ))}
+
+                    <div className="mt-2 flex gap-3">
+                        <Button
+                            variant="outline"
+                            onClick={themeToggle}
+                            className="flex-1 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
+                        >
+                            {theme === "light" ? "Dark mode" : "Light mode"}
+                        </Button>
+                        <Button
+                            variant="default"
+                            className="flex-1 rounded-2xl"
+                            onClick={closeMenu}
+                        >
+                            Get Started
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {sticky && <div className="h-16"></div>}
         </>
     );
 };
