@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
     HoverCard,
     HoverCardContent,
@@ -167,11 +168,14 @@ export default function Navbar({
                 aria-hidden="true"
             />
             <nav
-                className={navbarVariants({
-                    position: sticky ? "sticky" : "relative",
-                    variant: variant,
-                    transparent: transparent,
-                })}
+                className={cn(
+                    navbarVariants({
+                        position: sticky ? "sticky" : "relative",
+                        variant: variant,
+                        transparent: transparent,
+                    }),
+                    sticky && isScrolled && "h-14 bg-background/90 shadow-xl backdrop-blur-xl"
+                )}
             >
                 <div className="flex items-center gap-3">
                     <Link href="/" className="text-xl font-bold tracking-tight text-foreground dark:text-white">
@@ -292,7 +296,7 @@ export default function Navbar({
                 </div>
             </div>
 
-            {sticky && <div className="h-16"></div>}
+            {sticky && <div className={isScrolled ? "h-14" : "h-16"}></div>}
         </>
     );
 };
