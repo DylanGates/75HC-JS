@@ -179,6 +179,11 @@ export default function Navbar({
     }, [isScrolled, sticky]);
 
     useEffect(() => {
+        closeMenu();
+        closeSearch();
+    }, [pathname]);
+
+    useEffect(() => {
         const handleKeyboard = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 closeMenu();
