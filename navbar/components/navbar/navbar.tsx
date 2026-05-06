@@ -94,6 +94,8 @@ export default function Navbar({
 }: NavbarProps) {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const { theme, setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -113,6 +115,16 @@ export default function Navbar({
     const closeMenu = () => {
         setIsOpen(false);
     };
+
+    const closeSearch = () => {
+        setIsSearchOpen(false);
+        setSearchQuery("");
+    };
+
+    const filteredNavlinks = navlinks.filter((link) => {
+        const value = `${link.name} ${link.description}`.toLowerCase();
+        return value.includes(searchQuery.toLowerCase().trim());
+    });
     
     useEffect(() => {
         const handleScroll = () => {
@@ -141,24 +153,34 @@ export default function Navbar({
     }, [isScrolled, sticky]);
 
     useEffect(() => {
-        const handleEscape = (event: KeyboardEvent) => {
+        const handleKeyboard = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 closeMenu();
+                closeSearch();
+            }
+
+            if (
+                event.key === "/" &&
+                document.activeElement === document.body &&
+                !isOpen
+            ) {
+                event.preventDefault();
+                setIsSearchOpen(true);
             }
         };
 
-        if (isOpen) {
+        if (isOpen || isSearchOpen) {
             document.body.style.overflow = "hidden";
-            window.addEventListener("keydown", handleEscape);
+            window.addEventListener("keydown", handleKeyboard);
         } else {
             document.body.style.overflow = "";
         }
 
         return () => {
             document.body.style.overflow = "";
-            window.removeEventListener("keydown", handleEscape);
+            window.removeEventListener("keydown", handleKeyboard);
         };
-    }, [isOpen]);
+    }, [isOpen, isSearchOpen]);
 
     return(
         <>
@@ -232,6 +254,13 @@ export default function Navbar({
                         Get Started
                     </Button>
                     <Button
+                        variant="outline"
+                        onClick={() => setIsSearchOpen(true)}
+                        className="hidden md:inline-flex rounded-full border-border bg-background/70 px-4 text-foreground hover:bg-accent transition-colors"
+                    >
+                        Search /
+                    </Button>
+                    <Button
                         variant="ghost"
                         size="icon"
                         className="md:hidden"
@@ -252,6 +281,52 @@ export default function Navbar({
                     onClick={closeMenu}
                     aria-hidden="true"
                 />
+            )}
+
+            {isSearchOpen && (
+                <div
+                    className="fixed inset-0 top-16 z-50 flex items-start justify-center bg-black/50 px-4 pt-4"
+                    onClick={closeSearch}
+                    aria-hidden="true"
+                >
+                    <div
+                        className="w-full max-w-xl rounded-3xl border border-border bg-background/95 p-4 text-foreground shadow-2xl"
+                        onClick={(event) => event.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Quick navigation search"
+                    >
+                        <input
+                            autoFocus
+                            value={searchQuery}
+                            onChange={(event) => setSearchQuery(event.target.value)}
+                            placeholder="Search navigation..."
+                            className="mb-4 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none ring-0 placeholder:text-muted-foreground"
+                        />
+                        <div className="space-y-2">
+                            {filteredNavlinks.length > 0 ? (
+                                filteredNavlinks.map((link) => (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        onClick={closeSearch}
+                                        className="flex items-center justify-between rounded-2xl border border-border px-4 py-3 text-sm transition-colors hover:bg-accent"
+                                    >
+                                        <span>
+                                            <span className="block font-medium text-foreground">{link.name}</span>
+                                            <span className="block text-xs text-muted-foreground">{link.description}</span>
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">Open</span>
+                                    </Link>
+                                ))
+                            ) : (
+                                <p className="rounded-2xl border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
+                                    No matches found.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
 
             <div
@@ -284,6 +359,13 @@ export default function Navbar({
                             className="flex-1 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
                         >
                             {theme === "light" ? "Dark mode" : "Light mode"}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsSearchOpen(true)}
+                            className="flex-1 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
+                        >
+                            Search
                         </Button>
                         <Button
                             variant="default"
