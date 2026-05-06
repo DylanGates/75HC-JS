@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { tv } from 'tailwind-variants';
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -94,7 +95,10 @@ export default function Navbar({
     const [isOpen, setIsOpen] = useState(false);
     const { theme, setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
+    const pathname = usePathname();
     const mobileMenuId = "navbar-mobile-menu";
+
+    const isActiveLink = (href: string) => pathname === href;
 
     const themeToggle = () => {
         setTheme(theme === "light" ? "dark" : "light");
@@ -168,11 +172,16 @@ export default function Navbar({
                         <HoverCard key={link.href} openDelay={120} closeDelay={80}>
                             <HoverCardTrigger asChild>
                                 <Link
-                            key={link.href}
-                            href={link.href}
-                            className="text-sm font-medium text-foreground/75 transition-colors hover:text-foreground dark:text-white/80 dark:hover:text-white"
+                                    href={link.href}
+                                    aria-current={isActiveLink(link.href) ? "page" : undefined}
+                                    className={`text-sm font-medium transition-colors ${isActiveLink(link.href) ? "text-foreground dark:text-white" : "text-foreground/75 hover:text-foreground dark:text-white/80 dark:hover:text-white"}`}
                                 >
-                                    {link.name}
+                                    <span className="inline-flex items-center gap-2">
+                                        {link.name}
+                                        {isActiveLink(link.href) && (
+                                            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                                        )}
+                                    </span>
                                 </Link>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-72 rounded-2xl border border-border bg-background/95 shadow-xl">
@@ -239,9 +248,15 @@ export default function Navbar({
                             key={link.href}
                             href={link.href}
                             onClick={closeMenu}
-                            className="flex items-center justify-between rounded-2xl border border-white/10 px-4 py-3 text-sm font-medium transition-colors hover:bg-white/10"
+                            aria-current={isActiveLink(link.href) ? "page" : undefined}
+                            className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition-colors ${isActiveLink(link.href) ? "border-white/30 bg-white/15 text-white" : "border-white/10 hover:bg-white/10"}`}
                         >
-                            <span>{link.name}</span>
+                            <span className="inline-flex items-center gap-2">
+                                {link.name}
+                                {isActiveLink(link.href) && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                                )}
+                            </span>
                             <span className="text-xs text-white/50">Open</span>
                         </Link>
                     ))}
