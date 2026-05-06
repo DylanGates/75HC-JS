@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { tv } from 'tailwind-variants';
@@ -14,22 +15,49 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
+type NavExtraLink = {
+    label: string;
+    href: string;
+};
 
-const navlinks = [
+type NavItem = {
+    name: string;
+    href: string;
+    description: string;
+    image: string;
+    extraLinks: NavExtraLink[];
+};
+
+
+const navlinks: NavItem[] = [
     {
         name: "Home",
-        href: "/"
-        ,description: "Jump back to the landing page"
+        href: "/",
+        description: "Jump back to the landing page",
+        image: "/about-preview.svg",
+        extraLinks: [],
     },
     {
         name: "About",
-        href: "/about"
-        ,description: "See the story behind the project"
+        href: "/about",
+        description: "See the story behind the project",
+        image: "/about-preview.svg",
+        extraLinks: [
+            { label: "Team", href: "/about/team" },
+            { label: "History", href: "/about/history" },
+            { label: "Approach", href: "/about/approach" },
+        ],
     },
     {
         name: "Contact",
-        href: "/contact"
-        ,description: "Send a quick message or request"
+        href: "/contact",
+        description: "Send a quick message or request",
+        image: "/contact-preview.svg",
+        extraLinks: [
+            { label: "Support", href: "/contact/support" },
+            { label: "FAQ", href: "/contact/faq" },
+            { label: "Office", href: "/contact/office" },
+        ],
     }
 ];
 
@@ -255,19 +283,55 @@ export default function Navbar({
                                 </Link>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-72 rounded-2xl border border-border bg-background/95 shadow-xl">
-                                <div className="space-y-2">
-                                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                                        Navigation
-                                    </p>
-                                    <h4 className="text-base font-semibold text-foreground">
-                                        {link.name}
-                                    </h4>
-                                    <p className="text-sm leading-6 text-muted-foreground">
-                                        {link.description}
-                                    </p>
-                                    <Button asChild size="sm" className="mt-2 rounded-full">
-                                        <Link href={link.href}>Open page</Link>
-                                    </Button>
+                                <div className="flex gap-4">
+                                    <div className="w-24 shrink-0 space-y-3">
+                                        <Image
+                                            src={link.image}
+                                            alt={`${link.name} preview`}
+                                            width={40}
+                                            height={40}
+                                            className="h-10 w-10 rounded-xl border border-border object-cover"
+                                        />
+                                        <div className="space-y-1">
+                                            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                                                Navigation
+                                            </p>
+                                            <h4 className="text-sm font-semibold text-foreground">
+                                                {link.name}
+                                            </h4>
+                                            <p className="text-xs leading-5 text-muted-foreground">
+                                                {link.description}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="min-w-0 flex-1 space-y-2">
+                                        {link.extraLinks.length > 0 ? (
+                                            <>
+                                                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                                                    Extra links
+                                                </p>
+                                                {link.extraLinks.map((extraLink) => (
+                                                    <Link
+                                                        key={extraLink.href}
+                                                        href={extraLink.href}
+                                                        className="block rounded-xl border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                                                    >
+                                                        {extraLink.label}
+                                                    </Link>
+                                                ))}
+                                            </>
+                                        ) : (
+                                            <div className="flex h-full flex-col justify-end gap-2">
+                                                <p className="text-sm leading-6 text-muted-foreground">
+                                                    Open the main page for this section.
+                                                </p>
+                                                <Button asChild size="sm" className="mt-2 rounded-full">
+                                                    <Link href={link.href}>Open page</Link>
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </HoverCardContent>
                         </HoverCard>
