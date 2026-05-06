@@ -105,8 +105,10 @@ export default function Navbar({
     const isActiveLink = (href: string) => pathname === href;
 
     const themeToggle = () => {
-        setTheme(theme === "light" ? "dark" : "light");
+        setTheme(theme === "system" ? "light" : theme === "light" ? "dark" : "system");
     };
+
+    const themeLabel = theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System";
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -248,7 +250,7 @@ export default function Navbar({
                         onClick={themeToggle}
                         className="hidden md:inline-flex rounded-full border-border bg-background/70 px-4 text-foreground hover:bg-accent transition-colors"
                     >
-                        {theme === "light" ? "Dark" : "Light"}
+                        Theme: {themeLabel}
                     </Button>
                     <Button variant="default" className="hidden md:inline-flex">
                         Get Started
@@ -358,7 +360,7 @@ export default function Navbar({
                             onClick={themeToggle}
                             className="flex-1 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
                         >
-                            {theme === "light" ? "Dark mode" : "Light mode"}
+                            Theme: {themeLabel}
                         </Button>
                         <Button
                             variant="outline"
