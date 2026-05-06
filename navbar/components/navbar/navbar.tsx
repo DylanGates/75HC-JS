@@ -6,20 +6,28 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 
 const navlinks = [
     {
         name: "Home",
         href: "/"
+        ,description: "Jump back to the landing page"
     },
     {
         name: "About",
         href: "/about"
+        ,description: "See the story behind the project"
     },
     {
         name: "Contact",
         href: "/contact"
+        ,description: "Send a quick message or request"
     }
 ];
 
@@ -157,13 +165,33 @@ export default function Navbar({
 
                 <div className="hidden md:flex items-center gap-6">
                     {navlinks.map((link) => (
-                        <Link
+                        <HoverCard key={link.href} openDelay={120} closeDelay={80}>
+                            <HoverCardTrigger asChild>
+                                <Link
                             key={link.href}
                             href={link.href}
                             className="text-sm font-medium text-foreground/75 transition-colors hover:text-foreground dark:text-white/80 dark:hover:text-white"
-                        >
-                            {link.name}
-                        </Link>
+                                >
+                                    {link.name}
+                                </Link>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-72 rounded-2xl border border-border bg-background/95 shadow-xl">
+                                <div className="space-y-2">
+                                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                                        Navigation
+                                    </p>
+                                    <h4 className="text-base font-semibold text-foreground">
+                                        {link.name}
+                                    </h4>
+                                    <p className="text-sm leading-6 text-muted-foreground">
+                                        {link.description}
+                                    </p>
+                                    <Button asChild size="sm" className="mt-2 rounded-full">
+                                        <Link href={link.href}>Open page</Link>
+                                    </Button>
+                                </div>
+                            </HoverCardContent>
+                        </HoverCard>
                     ))}
                 </div>
 
