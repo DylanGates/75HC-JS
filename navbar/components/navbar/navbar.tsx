@@ -96,6 +96,7 @@ export default function Navbar({
     const [isOpen, setIsOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [shareLabel, setShareLabel] = useState("Share");
     const { theme, setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -121,6 +122,17 @@ export default function Navbar({
     const closeSearch = () => {
         setIsSearchOpen(false);
         setSearchQuery("");
+    };
+
+    const shareCurrentPage = async () => {
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            setShareLabel("Copied");
+            window.setTimeout(() => setShareLabel("Share"), 1400);
+        } catch {
+            setShareLabel("Copy failed");
+            window.setTimeout(() => setShareLabel("Share"), 1400);
+        }
     };
 
     const filteredNavlinks = navlinks.filter((link) => {
@@ -257,6 +269,13 @@ export default function Navbar({
                     </Button>
                     <Button
                         variant="outline"
+                        onClick={shareCurrentPage}
+                        className="hidden md:inline-flex rounded-full border-border bg-background/70 px-4 text-foreground hover:bg-accent transition-colors"
+                    >
+                        {shareLabel}
+                    </Button>
+                    <Button
+                        variant="outline"
                         onClick={() => setIsSearchOpen(true)}
                         className="hidden md:inline-flex rounded-full border-border bg-background/70 px-4 text-foreground hover:bg-accent transition-colors"
                     >
@@ -368,6 +387,13 @@ export default function Navbar({
                             className="flex-1 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
                         >
                             Search
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={shareCurrentPage}
+                            className="flex-1 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
+                        >
+                            {shareLabel}
                         </Button>
                         <Button
                             variant="default"
