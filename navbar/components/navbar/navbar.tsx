@@ -423,6 +423,10 @@ export default function Navbar({
                             </Link>
                         </Button>
                     </div>
+
+                    <div className="rounded-2xl border border-white/10 px-4 py-3 text-xs leading-5 text-white/60">
+                        Press / to search, Esc to close, and swipe down to dismiss.
+                    </div>
                 </div>
             </div>
 
