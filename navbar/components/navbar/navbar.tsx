@@ -264,8 +264,8 @@ export default function Navbar({
                     >
                         Theme: {themeLabel}
                     </Button>
-                    <Button variant="default" className="hidden md:inline-flex">
-                        Get Started
+                    <Button asChild variant="default" className="hidden md:inline-flex">
+                        <Link href="/contact">Get Started</Link>
                     </Button>
                     <Button
                         variant="outline"
@@ -396,11 +396,13 @@ export default function Navbar({
                             {shareLabel}
                         </Button>
                         <Button
+                            asChild
                             variant="default"
                             className="flex-1 rounded-2xl"
-                            onClick={closeMenu}
                         >
-                            Get Started
+                            <Link href="/contact" onClick={closeMenu}>
+                                Get Started
+                            </Link>
                         </Button>
                     </div>
                 </div>
