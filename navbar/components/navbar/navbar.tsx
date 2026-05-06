@@ -95,6 +95,7 @@ export default function Navbar({
     const [isOpen, setIsOpen] = useState(false);
     const { theme, setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
+    const [scrollProgress, setScrollProgress] = useState(0);
     const pathname = usePathname();
     const mobileMenuId = "navbar-mobile-menu";
 
@@ -114,9 +115,15 @@ export default function Navbar({
     
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0);
+            const scrollTop = window.scrollY;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+            setIsScrolled(scrollTop > 0);
+            setScrollProgress(Math.min(100, Math.max(0, progress)));
         };
 
+        handleScroll();
         window.addEventListener("scroll", handleScroll);
 
         return () => {
@@ -154,6 +161,11 @@ export default function Navbar({
 
     return(
         <>
+            <div
+                className="fixed left-0 top-0 z-60 h-1 bg-linear-to-r from-primary via-foreground to-primary transition-[width] duration-200 md:h-0.5"
+                style={{ width: `${scrollProgress}%` }}
+                aria-hidden="true"
+            />
             <nav
                 className={navbarVariants({
                     position: sticky ? "sticky" : "relative",
